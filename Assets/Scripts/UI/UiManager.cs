@@ -9,11 +9,13 @@ namespace UI
         public static UiManager Instance { get; private set; }
 
         public TooltipView Tooltip { get; private set; }
+        public InventoryView Inventory { get; private set; }
 
         void Awake()
         {
             Instance = this;
             Tooltip = gameObject.GetComponentInChildren<TooltipView>(true);
+            Inventory = gameObject.GetComponentInChildren<InventoryView>(true);
         }
     }
 }

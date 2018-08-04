@@ -1,11 +1,13 @@
-﻿using System.ComponentModel;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+
+using System.ComponentModel;
 using UI.ViewModel;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.View
 {
-    public class TooltipPropertyView : MonoBehaviour
+    public class TooltipPropertyView : MonoBehaviour, IView<ITooltipPropertyViewModel>
     {
         [SerializeField] private Text _textName;
 
@@ -16,7 +18,7 @@ namespace UI.View
         public void Initialize(ITooltipPropertyViewModel propertyVm)
         {
             _propertyVm = propertyVm;
-            _propertyVm.PropertyChanged += PropertyVm_OnPropertyChanged;
+            propertyVm.PropertyChanged += PropertyVm_OnPropertyChanged;
 
             _textName.text = propertyVm.Name;
             _textValue.text = propertyVm.Value;
@@ -29,10 +31,10 @@ namespace UI.View
 
         private void PropertyVm_OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            var tooltipPropertyViewModel = (TooltipPropertyViewModel) sender;
+            var tooltipPropertyViewModel = (ITooltipPropertyViewModel) sender;
             switch (propertyChangedEventArgs.PropertyName)
             {
-                case nameof(TooltipPropertyViewModel.Value):
+                case nameof(ITooltipPropertyViewModel.Value):
                     _textValue.text = tooltipPropertyViewModel.Value;
                     break;
             }

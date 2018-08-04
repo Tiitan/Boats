@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
+
 using System.Collections.Generic;
 using UI.ViewModel;
 using UnityEngine;
@@ -31,13 +33,8 @@ namespace UI.View
             _textDescription.text = description;
 
             if (propertyInfos != null)
-                foreach (var propertyInfo in propertyInfos)
-                {
-                    var propertyGameObject = GameObject.Instantiate(_propertyPrefab, _propertiesTransform);
-                    var propertyView = propertyGameObject.GetComponent<TooltipPropertyView>();
-                    _propertyViews.Add(propertyView);
-                    propertyView.Initialize(propertyInfo);
-                }
+                foreach (var propertyVm in propertyInfos)
+                    _propertyViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(propertyVm, _propertyPrefab, _propertiesTransform));
 
             _target = target;
             gameObject.SetActive(true);

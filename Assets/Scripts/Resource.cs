@@ -3,45 +3,29 @@ using UI;
 using UI.ViewModel;
 using UnityEngine;
 
-public enum ResourceType
-{
-    R1
-}
-
 public class Resource : MonoBehaviour
 {
     [SerializeField]
-    private ResourceType _type;
+    private Item _resourceItem;
 
-    [SerializeField]
-    private int _amount;
-
-    public ResourceType Type => _type;
-    public int Amount
-    {
-        get { return _amount; }
-        private set
-        {
-            _amount = value;
-            _tooltipProperties[nameof(Amount)].Value = Amount.ToString();
-        }
-    }
+    public ItemType Type => _resourceItem.Type;
+    public int Quantity => _resourceItem.Quantity;
 
     private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties = new Dictionary<string, TooltipPropertyViewModel>
     {
         {nameof(Type), new TooltipPropertyViewModel("Type", string.Empty) },
-        {nameof(Amount), new TooltipPropertyViewModel("Amount", string.Empty) }
+        {nameof(Quantity), new TooltipPropertyViewModel("Quantity", string.Empty) }
     };
 
     private void Start()
     {
         _tooltipProperties[nameof(Type)].Value = Type.ToString();
-        _tooltipProperties[nameof(Amount)].Value = Amount.ToString();
+        _tooltipProperties[nameof(Quantity)].Value = Quantity.ToString();
     }
 
     private void OnMouseEnter()
     {
-        UiManager.Instance.Tooltip.Show(transform, 20, _type.ToString(), "resource description", _tooltipProperties.Values);
+        UiManager.Instance.Tooltip.Show(transform, 20, Type.ToString(), "resource description", _tooltipProperties.Values);
     }
 
     private void OnMouseExit()
@@ -51,9 +35,8 @@ public class Resource : MonoBehaviour
 
     public int Harvest(int value)
     {
-        if (_amount < value)
-            value = _amount;
-        Amount -= value;
+        _resourceItem = _resourceItem.Pick(ref value);
+        _tooltipProperties[nameof(Quantity)].Value = Quantity.ToString();
         return value;
     }
 }
