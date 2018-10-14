@@ -31,25 +31,26 @@ public abstract class BoatAction : MonoBehaviour
     public event EventHandler<BoatActionArg> NotifyBoatAction;
 
 
-    protected int Quantity { get { return _quantity; } }
+    protected int Quantity => _quantity;
 
     /// <summary>Try to continue an action. Called each update</summary>
-    /// <returns>1: is over ? 2: did succeed ?</returns>
+    /// <returns>Action over ?</returns>
     public bool TryExecute(MonoBehaviour target, Inventory inventory)
     {
-        if (Vector3.Distance(transform.position, target.transform.position) < _range && _actionFrequency <= Time.timeSinceLevelLoad - _lastExecute)
+        if (Vector3.Distance(transform.position, target.transform.position) < _range && 
+            _actionFrequency <= Time.timeSinceLevelLoad - _lastExecute)
         {
             _lastExecute = Time.timeSinceLevelLoad;
-            bool /*(bool over, bool succeed)*/ result = Execute(target, inventory);
-            if (result)//.succeed)
+            (bool over, bool succeed) = Execute(target, inventory);
+            if (succeed)
                 NotifyBoatAction?.Invoke(this, new BoatActionArg(target.transform.position, _actionFrequency, _lastExecute, _quantity));
 
-            // return result.over;
+            return over;
         }
         return false;
     }
 
-    protected abstract bool /*(bool, bool)*/ Execute(MonoBehaviour target, Inventory inventory);
+    protected abstract (bool over, bool succeed) Execute(MonoBehaviour target, Inventory inventory);
 
     public virtual void OnDrawGizmos()
     {

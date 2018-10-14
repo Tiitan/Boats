@@ -5,7 +5,7 @@ public class Builder : BoatAction
 {
     /// <summary>Try to continue building. Called each update</summary>
     /// <returns>is building action over ? inventory empty/missmatch or structure finished</returns>
-    protected override bool Execute(MonoBehaviour target, Inventory inventory)
+    protected override (bool over, bool succeed) Execute(MonoBehaviour target, Inventory inventory)
     {
         var blueprint = (Blueprint)target;
 
@@ -18,9 +18,11 @@ public class Builder : BoatAction
             buildQuantity = buildQuantity <= Quantity ? buildQuantity : Quantity;
             inventory.Pick(missingItem.Type, buildQuantity);
             blueprint.Build(missingItem.Type, buildQuantity);
-            return true; //missingItems.Count == 1 && inventoryQuantity >= buildQuantity;
+            return (over: missingItems.Count == 1 && missingItem.Quantity == buildQuantity,
+                    succeed: true);
         }
-        return false;
+        return (over: true,
+                succeed: false);
     }
 
     public override void OnDrawGizmos()

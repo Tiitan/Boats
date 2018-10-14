@@ -60,7 +60,7 @@ public class MainBoat : MonoBehaviour
 
     private void OnTargetLocationChanged(object sender, TargetChangedArg e)
     {
-        Debug.Log($"New target location: {e.Location}");
+        // Debug.Log($"New target location: {e.Location}");
         _navMeshAgent.SetDestination(e.Location);
     }
 }

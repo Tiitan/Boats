@@ -73,8 +73,8 @@ namespace Framework
 
         public virtual TValue this[TKey key]
         {
-            get { return _internalDictionary[key]; }
-            set { _internalDictionary[key] = value; }
+            get => _internalDictionary[key];
+            set => _internalDictionary[key] = value;
         }
 
         #region Unity serialization
@@ -87,7 +87,7 @@ namespace Framework
             public TValue Value;
         }
 
-        [SerializeField] [Header("Items")] private List<SerializedkeyValuePair> _listSerializedDictionary;
+        [SerializeField] [Header("Items")] private List<SerializedkeyValuePair> _listSerializedDictionary = new List<SerializedkeyValuePair>();
 
         public void OnBeforeSerialize()
         {

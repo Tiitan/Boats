@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UI;
@@ -13,14 +15,14 @@ public class Blueprint : MonoBehaviour
     [SerializeField] List<Item> _requiredItems = new List<Item>();
     private readonly List<ItemViewModel> _items = new List<ItemViewModel>();
 
-    private bool buildingFinished;
+    private bool _buildingFinished;
 
     public IEnumerable<Item> MissingItems
     {
         get
         {
             return from requiredItem in _requiredItems
-                let item = _items.FirstOrDefault(x => x.Type == requiredItem.Type)?.Item ?? default(Item)
+                let item = _items.FirstOrDefault(x => x.Type == requiredItem.Type)?.Item ?? default
                 where requiredItem.Quantity > item.Quantity
                 select new Item(requiredItem.Type, requiredItem.Quantity - item.Quantity);
         }
@@ -28,7 +30,7 @@ public class Blueprint : MonoBehaviour
 
     public int Build(ItemType type, int quantity)
     {
-        if (buildingFinished)
+        if (_buildingFinished)
             return 0;
 
         var requiredItem = _requiredItems.FirstOrDefault(x => x.Type == type);
@@ -55,7 +57,7 @@ public class Blueprint : MonoBehaviour
 
     public IEnumerator FinalizeBuilding()
     {
-        buildingFinished = true;
+        _buildingFinished = true;
         if (_structurePrefab != null)
             GameObject.Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
         UiManager.Instance.Tooltip.Hide(transform);
@@ -84,7 +86,7 @@ public class Blueprint : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (!buildingFinished)
+        if (!_buildingFinished)
             UiManager.Instance.Tooltip.Show(transform, 20, "Blueprint", "blueprint description", _tooltipProperties.Values);
     }
 

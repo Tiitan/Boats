@@ -60,7 +60,7 @@ namespace UI
 
         public override TValue this[TKey key]
         {
-            get { return base[key]; }
+            get => base[key];
             set
             {
                 var isContained = ContainsKey(key);
@@ -69,9 +69,6 @@ namespace UI
             }
         }
 
-        IEnumerable<TValue> IReadOnlyObservableDictionary<TKey, TValue>.Values
-        {
-            get { return Values; }
-        }
+        IEnumerable<TValue> IReadOnlyObservableDictionary<TKey, TValue>.Values => Values;
     }
 }
