@@ -4,12 +4,13 @@ using UI;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent), typeof(Harvester))]
+[RequireComponent(typeof(NavMeshAgent), typeof(Harvester), typeof(Builder))]
 public class MainBoat : MonoBehaviour
 {
     private NavMeshAgent _navMeshAgent;
     private PlayerControl _controller;
     private Harvester _harvester;
+    private Builder _builder;
 
     [SerializeField] private Inventory _inventory;
 
@@ -20,6 +21,7 @@ public class MainBoat : MonoBehaviour
 	    _controller = LevelManager.Instance.Control;
 	    _navMeshAgent = GetComponent<NavMeshAgent>();
 	    _harvester = GetComponent<Harvester>();
+	    _builder = GetComponent<Builder>();
 
         _controller.TargetLocationChanged += OnTargetLocationChanged;
 	    _controller.TargetCommandChanged += OnTargetCommandChanged;
@@ -41,7 +43,11 @@ public class MainBoat : MonoBehaviour
         switch (_target.Type)
         {
             case EntityType.Resource:
-                if (_harvester.Harvest(_target.GetComponent<Resource>(), _inventory))
+                if (_harvester.TryExecute(_target.GetComponent<Resource>(), _inventory))
+                    _target = null;
+                break;
+            case EntityType.Structure:
+                if (_builder.TryExecute(_target.GetComponent<Blueprint>(), _inventory))
                     _target = null;
                 break;
         }

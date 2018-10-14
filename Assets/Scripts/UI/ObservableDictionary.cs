@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using Framework;
 
 namespace UI
 {
@@ -16,91 +17,54 @@ namespace UI
         IEnumerable<TValue> Values { get; }
     }
 
-    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
+    [Serializable]
+    public class ObservableDictionary<TKey, TValue> : SerializedDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
     {
-        private readonly IDictionary<TKey, TValue> _internalDictionary = new Dictionary<TKey, TValue>();
-
-        public int Count => _internalDictionary.Count;
-        public bool IsReadOnly => _internalDictionary.IsReadOnly;
-        public ICollection<TKey> Keys => _internalDictionary.Keys;
-
-        public ICollection<TValue> Values => _internalDictionary.Values;
-
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        public override void Add(KeyValuePair<TKey, TValue> item)
         {
-            return _internalDictionary.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            _internalDictionary.Add(item);
+            base.Add(item);
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item.Key));
         }
 
-        public void Clear()
+        public override void Clear()
         {
-            var keys = _internalDictionary.Keys;
-            _internalDictionary.Clear();
+            var keys = Keys.ToList();
+            base.Clear();
             if (keys.Count > 0)
-                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, keys.ToList()));
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, keys));
         }
 
-        public bool Contains(KeyValuePair<TKey, TValue> item)
+        public override bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return _internalDictionary.Contains(item);
-        }
-
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            _internalDictionary.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            var result = _internalDictionary.Remove(item);
+            var result = base.Remove(item);
             if (result)
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item.Key));
             return result;
         }
 
-        public void Add(TKey key, TValue value)
+        public override void Add(TKey key, TValue value)
         {
-            _internalDictionary.Add(key, value);
+            base.Add(key, value);
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, key));
         }
 
-        public bool ContainsKey(TKey key)
+        public override bool Remove(TKey key)
         {
-            return _internalDictionary.ContainsKey(key);
-        }
-
-        public bool Remove(TKey key)
-        {
-            var result = _internalDictionary.Remove(key);
+            var result = base.Remove(key);
             if (result)
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, key));
-            return _internalDictionary.Remove(key);
+            return result;
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public override TValue this[TKey key]
         {
-            return _internalDictionary.TryGetValue(key, out value);
-        }
-
-        public TValue this[TKey key]
-        {
-            get { return _internalDictionary[key]; }
+            get { return base[key]; }
             set
             {
-                var isContained = _internalDictionary.ContainsKey(key);
-                _internalDictionary[key] = value;
+                var isContained = ContainsKey(key);
+                base[key] = value;
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(isContained ? NotifyCollectionChangedAction.Replace : NotifyCollectionChangedAction.Add, key));
             }
         }

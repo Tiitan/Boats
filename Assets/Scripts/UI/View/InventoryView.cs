@@ -41,7 +41,7 @@ namespace UI.View
 
             // Remove
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
-                foreach (var key in notifyCollectionChangedEventArgs.NewItems.Cast<ItemType>())
+                foreach (var key in notifyCollectionChangedEventArgs.OldItems.Cast<ItemType>())
                 {
                     var view = _itemsView.First(x => x.ItemVm.Type == key);
                     _itemsView.Remove(view);

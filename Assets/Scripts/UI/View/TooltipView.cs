@@ -24,7 +24,8 @@ namespace UI.View
 
         private RectTransform RectTransform => (RectTransform)transform;
 
-        public void Show(Transform target, int pixelRadius, string title = null, string description = null, IEnumerable<ITooltipPropertyViewModel> propertyInfos = null)
+        public void Show(Transform target, int pixelRadius, string title = null, 
+            string description = null, IEnumerable<ITooltipPropertyViewModel> propertyInfos = null)
         {
             if (_target != null)
                 Hide(_target);
@@ -34,13 +35,16 @@ namespace UI.View
 
             if (propertyInfos != null)
                 foreach (var propertyVm in propertyInfos)
-                    _propertyViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(propertyVm, _propertyPrefab, _propertiesTransform));
+                    _propertyViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(
+                        propertyVm, _propertyPrefab, _propertiesTransform));
 
             _target = target;
             gameObject.SetActive(true);
             Canvas.ForceUpdateCanvases(); // force to recompute the ContentSizeFitter immediatly for correct height.
             var position = Camera.main.WorldToScreenPoint(_target.position);
-            transform.position = new Vector3(position.x + RectTransform.rect.width / 2 + pixelRadius, position.y + RectTransform.rect.height / 2 + pixelRadius, position.z);
+            transform.position = new Vector3(position.x + RectTransform.rect.width / 2 + pixelRadius, 
+                                             position.y + RectTransform.rect.height / 2 + pixelRadius, 
+                                             position.z);
         }
 
         public void Hide(Transform target)
