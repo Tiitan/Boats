@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TargetChangedArg : EventArgs
 {
@@ -21,25 +22,20 @@ public class PlayerControl : MonoBehaviour
 
     public event EventHandler<TargetChangedArg> TargetLocationChanged;
     public event EventHandler<TargetChangedArg> TargetCommandChanged;
-
-    void Start ()
-    {
-		
-	}
 	
 	void Update ()
     {
 	    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo))
+        if (!EventSystem.current.IsPointerOverGameObject()  &&
+            Physics.Raycast(ray, out var hitInfo))
         {
             var target = hitInfo.transform.GetComponent<Targetable>();
-            if (Input.GetButton("Move") && Vector3.Distance(_targetLocation, hitInfo.point) > LocationChangedMinDistance)
+            if (Input.GetButton("Mouse1") && Vector3.Distance(_targetLocation, hitInfo.point) > LocationChangedMinDistance)
             {
                 TargetLocationChanged?.Invoke(this, new TargetChangedArg(hitInfo.point, target));
                 _targetLocation = hitInfo.point;
             }
-            if (Input.GetButton("Command") && target != null)
+            if (Input.GetButton("Mouse2") && target != null)
             {
                 TargetCommandChanged?.Invoke(this, new TargetChangedArg(hitInfo.point, target));
             }

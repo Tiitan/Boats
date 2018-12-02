@@ -16,7 +16,7 @@ namespace UI.ViewModel
 
         public string Value
         {
-            get { return _value; }
+            get => _value;
             set { _value = value; OnPropertyChanged(); }
         }
 
