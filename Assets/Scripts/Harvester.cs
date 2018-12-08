@@ -17,9 +17,9 @@ public class Harvester : BoatAction
     }
 
 
-    public override void OnDrawGizmos()
+    public override void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
-        base.OnDrawGizmos();
+        base.OnDrawGizmosSelected();
     }
 }

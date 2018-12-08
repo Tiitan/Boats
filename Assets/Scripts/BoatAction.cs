@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
+
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -52,7 +55,7 @@ public abstract class BoatAction : MonoBehaviour
 
     protected abstract (bool over, bool succeed) Execute(MonoBehaviour target, Inventory inventory);
 
-    public virtual void OnDrawGizmos()
+    public virtual void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(transform.position, _range);
     }

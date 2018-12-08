@@ -1,4 +1,5 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
 using UI;
 using UnityEngine;

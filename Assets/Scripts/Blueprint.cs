@@ -1,4 +1,5 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "add readonly modifier" for SerializedField
 
 using System.Collections;
 using System.Collections.Generic;
@@ -60,6 +61,7 @@ public class Blueprint : MonoBehaviour
         _buildingFinished = true;
         if (_structurePrefab != null)
             GameObject.Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
+        LevelManager.Instance.NavMeshSurface.BuildNavMesh();
         UiManager.Instance.Tooltip.Hide(transform);
         yield return new WaitForSeconds(_finalizeDuration);
         GameObject.Destroy(gameObject);

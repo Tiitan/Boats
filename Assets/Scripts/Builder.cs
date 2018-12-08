@@ -25,9 +25,9 @@ public class Builder : BoatAction
                 succeed: false);
     }
 
-    public override void OnDrawGizmos()
+    public override void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
-        base.OnDrawGizmos();
+        base.OnDrawGizmosSelected();
     }
 }
