@@ -8,6 +8,7 @@ using UI;
 using UI.ViewModel;
 using UnityEngine;
 
+[RequireComponent(typeof(Selectable))]
 public class Blueprint : MonoBehaviour
 {
     [SerializeField] private GameObject _structurePrefab;
@@ -17,6 +18,8 @@ public class Blueprint : MonoBehaviour
     private readonly List<ItemViewModel> _items = new List<ItemViewModel>();
 
     private bool _buildingFinished;
+
+    private CommandViewModel _cancelCommand;
 
     public IEnumerable<Item> MissingItems
     {
@@ -56,18 +59,24 @@ public class Blueprint : MonoBehaviour
         return usedQuantity;
     }
 
+    private void CancelBlueprintCommand()
+    {
+        if (_buildingFinished)
+            return;
+        UiManager.Instance.Tooltip.Hide(transform);
+        Destroy(gameObject);
+    }
+
     public IEnumerator FinalizeBuilding()
     {
         _buildingFinished = true;
         if (_structurePrefab != null)
-            GameObject.Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
+            Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
         LevelManager.Instance.NavMeshSurface.BuildNavMesh();
         UiManager.Instance.Tooltip.Hide(transform);
         yield return new WaitForSeconds(_finalizeDuration);
-        GameObject.Destroy(gameObject);
+        Destroy(gameObject);
     }
-
-    #region Tooltip
 
     private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties = 
         new Dictionary<string, TooltipPropertyViewModel>();
@@ -79,11 +88,16 @@ public class Blueprint : MonoBehaviour
 
     private void Start()
     {
+        // Tooltip
         foreach (var requiredItem in _requiredItems)
         {
             _tooltipProperties.Add(requiredItem.Type.ToString(), 
                 new TooltipPropertyViewModel(requiredItem.Type.ToString(), GetFormattedQuantity(requiredItem)));
         }
+
+        // Command
+        _cancelCommand = new CommandViewModel("Cancel build", CancelBlueprintCommand);
+        GetComponent<Selectable>().Commands = new[] { _cancelCommand };
     }
 
     private void OnMouseEnter()
@@ -96,6 +110,4 @@ public class Blueprint : MonoBehaviour
     {
         UiManager.Instance.Tooltip.Hide(transform);
     }
-    #endregion
-
 }

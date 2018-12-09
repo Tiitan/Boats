@@ -29,7 +29,7 @@ public class PlayerControl : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject()  &&
             Physics.Raycast(ray, out var hitInfo))
         {
-            var target = hitInfo.transform.GetComponent<Targetable>();
+            var target = hitInfo.transform.GetComponent<Selectable>();
             if (Input.GetButton("Mouse1") && Vector3.Distance(_targetLocation, hitInfo.point) > LocationChangedMinDistance)
             {
                 TargetLocationChanged?.Invoke(this, new TargetChangedArg(hitInfo.point, target));

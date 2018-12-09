@@ -1,4 +1,5 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "add readonly modifier" for SerializedField
 
 using System.Collections.Generic;
 using UI.ViewModel;
@@ -8,8 +9,7 @@ namespace UI.View
 {
     public class CommandUiView : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject _commandPrefab;
+        [SerializeField] private GameObject _commandPrefab;
 
         readonly Dictionary<ICommandViewModel, GameObject> _commands = new Dictionary<ICommandViewModel, GameObject>();
 
@@ -27,6 +27,18 @@ namespace UI.View
             if (_commands[commandVm] != null)
                 Destroy(_commands[commandVm]);
             _commands.Remove(commandVm);
+        }
+
+        public void Register(IEnumerable<ICommandViewModel> commandVms)
+        {
+            foreach (var commandVm in commandVms)
+                Register(commandVm);
+        }
+
+        public void UnRegister(IEnumerable<ICommandViewModel> commandVms)
+        {
+            foreach (var commandVm in commandVms)
+                UnRegister(commandVm);
         }
     }
 }
