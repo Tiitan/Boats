@@ -86,6 +86,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5161233048469490914}
+  - component: {fileID: 2872943732001750493}
   m_Layer: 0
   m_Name: BuildCursor
   m_TagString: Untagged
@@ -108,3 +109,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2872943732001750493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5164128855431119544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39dbb5c618539b04fb7128ece1cc00a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: f00fcf7e3610e444ca1e069cac75a320, type: 2}
+  _canBuildColor: {r: 0.32373613, g: 0.42685172, b: 0.9150943, a: 0.6627451}
+  _canNotBuildColor: {r: 0.9137255, g: 0.3348119, b: 0.32549024, a: 0.6627451}

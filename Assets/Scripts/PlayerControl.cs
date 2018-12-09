@@ -1,18 +1,7 @@
 ﻿using System;
+using EventArgs;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
-public class TargetChangedArg : EventArgs
-{
-    public Vector3 Location { get; }
-    public Targetable Target { get; }
-
-    public TargetChangedArg(Vector3 location, Targetable target)
-    {
-        Location = location;
-        Target = target;
-    }
-}
 
 public class PlayerControl : MonoBehaviour
 {

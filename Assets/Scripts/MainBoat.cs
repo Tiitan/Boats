@@ -1,6 +1,8 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
+using Enums;
+using EventArgs;
 using UI;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,7 +17,7 @@ public class MainBoat : MonoBehaviour
 
     [SerializeField] private Inventory _inventory;
 
-    private Targetable _target;
+    private Selectable _target;
 
 	void Start ()
 	{

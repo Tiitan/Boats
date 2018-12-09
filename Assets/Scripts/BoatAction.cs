@@ -2,26 +2,8 @@
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
 using System;
+using EventArgs;
 using UnityEngine;
-
-/// <summary>
-/// Event to notify BuilderView to trigger Fx 
-/// </summary>
-public class BoatActionArg : EventArgs
-{
-    public Vector3 Position { get; }
-    public float Frequency { get; }
-    public float Quantity { get; }
-    public float Date { get; }
-
-    public BoatActionArg(Vector3 position, float frequency, float date, float quantity)
-    {
-        Position = position;
-        Frequency = frequency;
-        Date = date;
-        Quantity = quantity;
-    }
-}
 
 public abstract class BoatAction : MonoBehaviour
 {

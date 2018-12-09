@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 114415286126388516}
   - component: {fileID: 4548615556687953014}
   - component: {fileID: 5503581613423617970}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Blueprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
