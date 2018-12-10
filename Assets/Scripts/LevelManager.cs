@@ -8,11 +8,13 @@ public class LevelManager : MonoBehaviour
 
     public PlayerControl Control { get; private set; }
     public NavMeshSurface NavMeshSurface { get; private set; }
+    public StationsManager StationsManager { get; private set; }
 
     void Awake ()
 	{
 	    Instance = this;
 	    Control = gameObject.GetComponentInChildren<PlayerControl>();
 	    NavMeshSurface = gameObject.GetComponentInChildren<NavMeshSurface>();
+	    StationsManager = gameObject.GetComponentInChildren<StationsManager>();
 	}
 }

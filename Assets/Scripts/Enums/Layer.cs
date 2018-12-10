@@ -23,6 +23,7 @@ namespace Enums
         Island = 1 << 10,
         Ressource = 1 << 11,
         Structure = 1 << 12,
-        Blueprint = 1 << 13
+        Blueprint = 1 << 13,
+        Trigger = 1 << 14
     }
 }

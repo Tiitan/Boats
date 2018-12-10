@@ -123,4 +123,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _material: {fileID: 2100000, guid: f00fcf7e3610e444ca1e069cac75a320, type: 2}
   _canBuildColor: {r: 0.32373613, g: 0.42685172, b: 0.9150943, a: 0.6627451}
-  _canNotBuildColor: {r: 0.9137255, g: 0.3348119, b: 0.32549024, a: 0.6627451}
+  _obstructedColor: {r: 0.9137255, g: 0.3348119, b: 0.32549024, a: 0.6627451}
+  _proximityColor: {r: 0.9137255, g: 0.9092962, b: 0.32549024, a: 0.6627451}

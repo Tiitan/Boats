@@ -3,6 +3,7 @@
 
 using EventArgs;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BuildCursor : MonoBehaviour
 {
@@ -11,13 +12,14 @@ public class BuildCursor : MonoBehaviour
     [SerializeField] private Material _material;
 
     [SerializeField] private Color _canBuildColor;
-    [SerializeField] private Color _canNotBuildColor;
+    [SerializeField] [FormerlySerializedAs("_canNotBuildColor")] private Color _obstructedColor;
+    [SerializeField] private Color _proximityColor;
 
     public void Start()
     {
         _buildManager = GetComponentInParent<BuildManager>();
         _buildManager.CanBuildAtLocationChanged += BuildManagerOnCanBuildAtLocationChanged;
-        _material.color = _canNotBuildColor;
+        _material.color = _canBuildColor;
     }
 
     public void OnDestroy()
@@ -27,6 +29,7 @@ public class BuildCursor : MonoBehaviour
 
     private void BuildManagerOnCanBuildAtLocationChanged(object sender, CanBuildAtLocationChangedArg canBuildAtLocationChangedArg)
     {
-        _material.color = canBuildAtLocationChangedArg.NewState ? _canBuildColor : _canNotBuildColor;
+        _material.color = canBuildAtLocationChangedArg.IsObstructed ? 
+            _obstructedColor : (canBuildAtLocationChangedArg.IsTooClose ? _proximityColor : _canBuildColor);
     }
 }

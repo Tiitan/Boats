@@ -16,12 +16,15 @@ public class BuildManager : MonoBehaviour
 
     private GameObject _cursor;
 
-    private bool _canBuildAtLocation;
+    private bool _isObstructed;
+    private bool _stationProximity;
 
     [SerializeField] private GameObject _cursorPrefab;
     [SerializeField] private GameObject _blueprintPrefab;
 
     public event EventHandler<CanBuildAtLocationChangedArg> CanBuildAtLocationChanged;
+
+    private StationsManager _stationManager;
 
     private void ToogleBuildManager(bool e)
     {
@@ -35,9 +38,10 @@ public class BuildManager : MonoBehaviour
 
     private void Start()
     {
-        _buildCommand = new CommandViewModel("Build platform", OnBuildCommand);
+        _buildCommand = new CommandViewModel("New station", OnBuildCommand);
         UiManager.Instance.CommandUiView.Register(_buildCommand);
         enabled = false;
+        _stationManager = LevelManager.Instance.StationsManager;
     }
 
     private void OnDestroy()
@@ -57,23 +61,22 @@ public class BuildManager : MonoBehaviour
         if (_buildPlane.Raycast(ray, out float distance))
         {
             var raycastPoint = ray.GetPoint(distance);
-            bool canBuildAtLocation = NavMesh.SamplePosition(raycastPoint, out var navMeshHit, 1f, NavMesh.AllAreas);
-            if (canBuildAtLocation)
+            bool isObstructed = !NavMesh.SamplePosition(raycastPoint, out var navMeshHit, 5f, NavMesh.AllAreas);
+            bool stationProximity = _stationManager.InAnyStationProximity(raycastPoint);
+
+            _cursor.transform.position = isObstructed ? raycastPoint : navMeshHit.position;
+
+            if (!isObstructed && !stationProximity && Input.GetButton("Mouse1"))
             {
-                _cursor.transform.position = navMeshHit.position;
-                if (Input.GetButton("Mouse1"))
-                {
                     Instantiate(_blueprintPrefab, _cursor.transform.position, _cursor.transform.rotation);
                     ToogleBuildManager(false);
-                }
             }
-            else
-                _cursor.transform.position = raycastPoint;
 
-            if (canBuildAtLocation != _canBuildAtLocation)
+            if (isObstructed != _isObstructed || _stationProximity != stationProximity)
             {
-                CanBuildAtLocationChanged?.Invoke(this, new CanBuildAtLocationChangedArg(canBuildAtLocation));
-                _canBuildAtLocation = canBuildAtLocation;
+                CanBuildAtLocationChanged?.Invoke(this, new CanBuildAtLocationChangedArg(isObstructed, stationProximity));
+                _isObstructed = isObstructed;
+                _stationProximity = stationProximity;
             }
         }
         if (Input.GetButton("Mouse2"))

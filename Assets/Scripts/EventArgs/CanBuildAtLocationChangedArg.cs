@@ -5,11 +5,13 @@
     /// </summary>
     public class CanBuildAtLocationChangedArg : System.EventArgs
     {
-        public bool NewState { get; }
+        public bool IsObstructed { get; }
+        public bool IsTooClose { get; }
 
-        public CanBuildAtLocationChangedArg(bool newState)
+        public CanBuildAtLocationChangedArg(bool isObstructed, bool isTooClose)
         {
-            NewState = newState;
+            IsObstructed = isObstructed;
+            IsTooClose = isTooClose;
         }
     }
 }
