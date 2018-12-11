@@ -74,6 +74,7 @@ public class Blueprint : MonoBehaviour
             Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
         LevelManager.Instance.NavMeshSurface.BuildNavMesh();
         UiManager.Instance.Tooltip.Hide(transform);
+        GetComponent<Selectable>().DisableSelection();
         yield return new WaitForSeconds(_finalizeDuration);
         Destroy(gameObject);
     }

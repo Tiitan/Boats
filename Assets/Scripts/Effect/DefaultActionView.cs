@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 
 using System.Collections;
+using BoatActions;
 using EventArgs;
 using UnityEngine;
 

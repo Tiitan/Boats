@@ -18,6 +18,7 @@ public class Selectable : MonoBehaviour
     [SerializeField] private EntityType _type;
 
     private bool _isSelected;
+    private bool _isSelectionDisabled;
 
     public EntityType Type => _type;
 
@@ -25,6 +26,8 @@ public class Selectable : MonoBehaviour
 
     public void Select (bool isSelected)
     {
+        if (_isSelectionDisabled) return;
+
         _isSelected = isSelected;
         if (_selectedEffect != null)
             _selectedEffect.SetActive(isSelected);
@@ -42,5 +45,14 @@ public class Selectable : MonoBehaviour
     {
         if (_isSelected && Commands != null)
             UiManager.Instance.CommandUiView.UnRegister(Commands);
+    }
+
+    /// <summary>
+    /// Disable selection when this object is about to be destroyed.
+    /// </summary>
+    public void DisableSelection()
+    {
+        Select(false);
+        _isSelectionDisabled = true;
     }
 }

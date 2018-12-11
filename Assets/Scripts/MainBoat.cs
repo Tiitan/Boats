@@ -1,6 +1,8 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
+using BoatActions;
+using Controllers;
 using Enums;
 using EventArgs;
 using UI;
@@ -21,7 +23,7 @@ public class MainBoat : MonoBehaviour
 
 	void Start ()
 	{
-	    _controller = LevelManager.Instance.Control;
+	    _controller = LevelManager.Instance.PlayerControl;
 	    _navMeshAgent = GetComponent<NavMeshAgent>();
 	    _harvester = GetComponent<Harvester>();
 	    _builder = GetComponent<Builder>();
