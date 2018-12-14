@@ -1,4 +1,7 @@
-﻿using Controllers;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
+
+using Controllers;
 using Framework;
 using UI;
 using UI.ViewModel;
@@ -9,6 +12,11 @@ public class Station : MonoBehaviour
 {
     private const float HexaSideSizeW = 8f;
     private const float HexaSideSizeH = 6.9282f;
+
+    [SerializeField] GameObject _expansionBlueprintPrefab;
+    [SerializeField] GameObject _expansionStructurePrefab;
+
+    private GameObject _expansionBlueprint;
 
     private static int _stationCount;
 
@@ -61,5 +69,46 @@ public class Station : MonoBehaviour
     {
         // TODO: Station grid lookup placeholder
         return new[] {new Vector3(HexaSideSizeH, 0, HexaSideSizeW * 1.5f), new Vector3(-HexaSideSizeH, 0, -HexaSideSizeW * 1.5f) };
+    }
+
+    /// <summary>
+    /// A position was selected by the stationExpanderControl,
+    /// Instantiate an expansion blueprint at that location.
+    /// </summary>
+    /// <param name="position">Position selected by the stationExpanderControl</param>
+    public void SubmitExtansion(Vector3 position)
+    {
+        _expansionBlueprint = Instantiate(_expansionBlueprintPrefab, position, Quaternion.identity);
+        _expansionBlueprint.GetComponent<Blueprint>().InitializeExpand(this, _expansionStructurePrefab);
+        RefreshExpandCommand();
+        // TODO add to _buildingHexaGrid
+    }
+
+    /// <summary>
+    /// refresh the expand command status.
+    /// TODO: define expand rules
+    /// </summary>
+    public void RefreshExpandCommand()
+    {
+        _expandCommand.Enabled = _expansionBlueprint == null;
+    }
+
+    /// <summary>
+    /// The blueprint construction finished
+    /// </summary>
+    /// <param name="expand">new expand</param>
+    public void OnExpandFinalized(GameObject expand)
+    {
+        _expansionBlueprint = null;
+        RefreshExpandCommand();
+    }
+
+    /// <summary>
+    /// The blueprint construction was canceled
+    /// </summary>
+    public void OnExpandCanceled()
+    {
+        _expansionBlueprint = null;
+        RefreshExpandCommand();
     }
 }

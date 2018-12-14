@@ -21,6 +21,11 @@ public class Blueprint : MonoBehaviour
 
     private CommandViewModel _cancelCommand;
 
+    private Station _station;
+
+    private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties =
+        new Dictionary<string, TooltipPropertyViewModel>();
+
     public IEnumerable<Item> MissingItems
     {
         get
@@ -30,6 +35,18 @@ public class Blueprint : MonoBehaviour
                 where requiredItem.Quantity > item.Quantity
                 select new Item(requiredItem.Type, requiredItem.Quantity - item.Quantity);
         }
+    }
+
+    /// <summary>
+    /// Initialize this blueprint as an existing station expansion.
+    /// optionnal: will create a new station on completion if not called.
+    /// </summary>
+    /// <param name="station">parent station</param>
+    /// <param name="structurePrefab">structure prefab override</param>
+    public void InitializeExpand(Station station, GameObject structurePrefab)
+    {
+        _station = station;
+        _structurePrefab = structurePrefab;
     }
 
     public int Build(ItemType type, int quantity)
@@ -63,6 +80,7 @@ public class Blueprint : MonoBehaviour
     {
         if (_buildingFinished)
             return;
+        _station?.OnExpandCanceled();
         UiManager.Instance.Tooltip.Hide(transform);
         Destroy(gameObject);
     }
@@ -70,17 +88,14 @@ public class Blueprint : MonoBehaviour
     public IEnumerator FinalizeBuilding()
     {
         _buildingFinished = true;
-        if (_structurePrefab != null)
-            Instantiate(_structurePrefab, transform.position, transform.rotation, transform.parent);
+        var expand = Instantiate(_structurePrefab, transform.position, transform.rotation, _station?.transform);
+        _station?.OnExpandFinalized(expand);
         LevelManager.Instance.NavMeshSurface.BuildNavMesh();
         UiManager.Instance.Tooltip.Hide(transform);
         GetComponent<Selectable>().DisableSelection();
         yield return new WaitForSeconds(_finalizeDuration);
         Destroy(gameObject);
     }
-
-    private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties = 
-        new Dictionary<string, TooltipPropertyViewModel>();
 
     string GetFormattedQuantity(Item requiredItem)
     {
@@ -104,7 +119,14 @@ public class Blueprint : MonoBehaviour
     private void OnMouseEnter()
     {
         if (!_buildingFinished)
-            UiManager.Instance.Tooltip.Show(transform, 20, "Blueprint", "blueprint description", _tooltipProperties.Values);
+        {
+            UiManager.Instance.Tooltip.Show(
+                transform, 20,
+                _station == null ? "Station Blueprint" : "Expand blueprint",
+                _station == null ? "Building a new station": "Expanding this station", 
+                _tooltipProperties.Values
+            );
+        }
     }
 
     private void OnMouseExit()

@@ -53,6 +53,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869e1eb38908b4047a81a670aca23a33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _expansionBlueprintPrefab: {fileID: 1269223722404572, guid: 2dda50557fc70b543b4454705ed43b66,
+    type: 3}
+  _expansionStructurePrefab: {fileID: 1708582691672428509, guid: 6f02fef848e2bea4192ea75c8f4f9412,
+    type: 3}
 --- !u!114 &8369849318051656091
 MonoBehaviour:
   m_ObjectHideFlags: 0

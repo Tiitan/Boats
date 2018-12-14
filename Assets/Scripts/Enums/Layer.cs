@@ -24,6 +24,7 @@ namespace Enums
         Ressource = 1 << 11,
         Structure = 1 << 12,
         Blueprint = 1 << 13,
-        Trigger = 1 << 14
+        Trigger = 1 << 14,
+        Gizmo = 1 << 15
     }
 }

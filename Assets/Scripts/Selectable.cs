@@ -28,17 +28,17 @@ public class Selectable : MonoBehaviour
     {
         if (_isSelectionDisabled) return;
 
-        _isSelected = isSelected;
         if (_selectedEffect != null)
             _selectedEffect.SetActive(isSelected);
 
-        if (Commands != null)
+        if (Commands != null && _isSelected != isSelected)
         {
             if (isSelected)
                 UiManager.Instance.CommandUiView.Register(Commands);
             else
                 UiManager.Instance.CommandUiView.UnRegister(Commands);
         }
+        _isSelected = isSelected;
     }
 
     private void OnDestroy()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4779789731928525630}
   - component: {fileID: 8380276464147494031}
   - component: {fileID: 4443091823931087131}
+  - component: {fileID: 7533623769084563724}
   m_Layer: 15
   m_Name: ExpanderGizmo
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1652135768714302578}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -91,4 +92,19 @@ MeshCollider:
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 4300000, guid: b1985c9933618f047923a6f42b9636a1, type: 3}
+--- !u!114 &7533623769084563724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652135768714302578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eaba30cab4c88e439f417f7d97aa1db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultColor: {r: 0.32549024, g: 0.9137255, b: 0.36730057, a: 0.6627451}
+  _mouseOverColor: {r: 0.68293875, g: 0.9716981, b: 0.70411444, a: 0.6627451}
+  _mouseDownColor: {r: 0.1953097, g: 0.5377358, b: 0.22042091, a: 0.6627451}

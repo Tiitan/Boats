@@ -15,6 +15,7 @@ namespace UI.View
 
         public void Register(ICommandViewModel commandVm)
         {
+            if (_commands.ContainsKey(commandVm)) return;
             var commandObject = Instantiate(_commandPrefab, transform.position, transform.rotation, transform);
             var commmandView = commandObject.GetComponent<CommandView>();
             commmandView.Initialize(commandVm);
