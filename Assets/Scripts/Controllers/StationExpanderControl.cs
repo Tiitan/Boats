@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using Enums;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Controllers
 {
@@ -14,7 +13,6 @@ namespace Controllers
 
         private ControllerManager _controllerManager;
         private Station _station;
-        private Vector3[] _expansionLocations;
         private readonly List<GizmoButton> _expanderGizmos = new List<GizmoButton>();
 
         private GizmoButton _overButton;
@@ -56,8 +54,8 @@ namespace Controllers
         public void GotFocus()
         {
             _mouseDown = false;
-            _expansionLocations = _station.GetExtansionLocation();
-            foreach (var locaion in _expansionLocations)
+            var expansionLocations = _station.GetExtansionLocation();
+            foreach (var locaion in expansionLocations)
             {
                 var expanderGizmo = Instantiate(
                     _expanderGizmoPrefab, transform.position + locaion, Quaternion.identity)

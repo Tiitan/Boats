@@ -1,6 +1,7 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
+using System.Collections.Generic;
 using Controllers;
 using Framework;
 using UI;
@@ -10,9 +11,6 @@ using UnityEngine;
 [RequireComponent(typeof(Selectable), typeof(StationExpanderControl))]
 public class Station : MonoBehaviour
 {
-    private const float HexaSideSizeW = 8f;
-    private const float HexaSideSizeH = 6.9282f;
-
     [SerializeField] GameObject _expansionBlueprintPrefab;
     [SerializeField] GameObject _expansionStructurePrefab;
 
@@ -26,12 +24,12 @@ public class Station : MonoBehaviour
 
     private StationExpanderControl _stationExpanderControl;
 
-    // _buildingHexaGrid
+    private StationHexaGrid _hexaGrid;
 
     private void Start()
     {
+        _hexaGrid = new StationHexaGrid(gameObject);
         LevelManager.Instance.StationsManager.Register(this);
-
         StationName = NameGenerator.NumberToName(_stationCount++);
 
         _stationExpanderControl = GetComponent<StationExpanderControl>();
@@ -62,13 +60,13 @@ public class Station : MonoBehaviour
     }
 
     /// <summary>
-    /// Find all extansion slot in the station grid then lookup the navmesh to make sur the locaiton is buildable
+    /// Find all extansion slot in the station grid then lookup the navmesh to make sur the location is buildable
     /// </summary>
     /// <returns>array of availlable location relative to this transform</returns>
-    public Vector3[] GetExtansionLocation()
+    public List<Vector3> GetExtansionLocation()
     {
-        // TODO: Station grid lookup placeholder
-        return new[] {new Vector3(HexaSideSizeH, 0, HexaSideSizeW * 1.5f), new Vector3(-HexaSideSizeH, 0, -HexaSideSizeW * 1.5f) };
+        return _hexaGrid.GetExtansionLocations();
+        // TODO: check navmesh
     }
 
     /// <summary>
@@ -99,6 +97,7 @@ public class Station : MonoBehaviour
     /// <param name="expand">new expand</param>
     public void OnExpandFinalized(GameObject expand)
     {
+        _hexaGrid.Expand(expand);
         _expansionBlueprint = null;
         RefreshExpandCommand();
     }
