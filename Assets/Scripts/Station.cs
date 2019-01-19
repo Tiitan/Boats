@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Controllers;
+using Enums;
 using Framework;
 using UI;
 using UI.ViewModel;
@@ -12,30 +13,29 @@ using UnityEngine;
 public class Station : MonoBehaviour
 {
     [SerializeField] GameObject _expansionBlueprintPrefab;
-    [SerializeField] GameObject _expansionStructurePrefab;
+    [SerializeField] GameObject _portExpansionBlueprintPrefab;
 
     private GameObject _expansionBlueprint;
 
-    private static int _stationCount;
-
-    public string StationName { get; private set; }
-
     private CommandViewModel _expandCommand;
+    private CommandViewModel _portExpandCommand;
 
     private StationExpanderControl _stationExpanderControl;
+    private GameObject _selectedBlueprint;
 
     private StationHexaGrid _hexaGrid;
 
     private void Start()
     {
-        _hexaGrid = new StationHexaGrid(gameObject);
+        _hexaGrid = new StationHexaGrid(GetComponentInChildren<Platform>());
         LevelManager.Instance.StationsManager.Register(this);
-        StationName = NameGenerator.NumberToName(_stationCount++);
 
         _stationExpanderControl = GetComponent<StationExpanderControl>();
+
         // Command
         _expandCommand = new CommandViewModel("Expand", ExpandCommand);
-        GetComponent<Selectable>().Commands = new[] { _expandCommand };
+        _portExpandCommand = new CommandViewModel("Port Expand", PortExpandCommand);
+        GetComponent<Selectable>().Commands = new[] { _expandCommand, _portExpandCommand};
     }
 
     private void OnDestroy()
@@ -46,17 +46,16 @@ public class Station : MonoBehaviour
 
     private void ExpandCommand()
     {
+        _selectedBlueprint = _expansionBlueprintPrefab;
+        _stationExpanderControl.Mode = HexaType.Full;
         LevelManager.Instance.ControllerManager.ClaimControl(_stationExpanderControl);
     }
 
-    private void OnMouseEnter()
+    private void PortExpandCommand()
     {
-        UiManager.Instance.Tooltip.Show(transform, 20, $"Station {StationName}");
-    }
-
-    private void OnMouseExit()
-    {
-        UiManager.Instance.Tooltip.Hide(transform);
+        _selectedBlueprint = _portExpansionBlueprintPrefab;
+        _stationExpanderControl.Mode = HexaType.Port;
+        LevelManager.Instance.ControllerManager.ClaimControl(_stationExpanderControl);
     }
 
     /// <summary>
@@ -74,12 +73,12 @@ public class Station : MonoBehaviour
     /// Instantiate an expansion blueprint at that location.
     /// </summary>
     /// <param name="position">Position selected by the stationExpanderControl</param>
-    public void SubmitExtansion(Vector3 position)
+    /// <param name="direction">Quaternion direction</param>
+    public void SubmitExtansion(Vector3 position, Quaternion direction)
     {
-        _expansionBlueprint = Instantiate(_expansionBlueprintPrefab, position, Quaternion.identity);
-        _expansionBlueprint.GetComponent<Blueprint>().InitializeExpand(this, _expansionStructurePrefab);
+        _expansionBlueprint = Instantiate(_selectedBlueprint, position, direction, transform);
         RefreshExpandCommand();
-        // TODO add to _buildingHexaGrid
+        // TODO add blueprint to _buildingHexaGrid
     }
 
     /// <summary>
@@ -89,6 +88,7 @@ public class Station : MonoBehaviour
     public void RefreshExpandCommand()
     {
         _expandCommand.Enabled = _expansionBlueprint == null;
+        _portExpandCommand.Enabled = _expansionBlueprint == null;
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public class Station : MonoBehaviour
     /// <param name="expand">new expand</param>
     public void OnExpandFinalized(GameObject expand)
     {
-        _hexaGrid.Expand(expand);
+        _hexaGrid.Expand(expand.GetComponent<Platform>());
         _expansionBlueprint = null;
         RefreshExpandCommand();
     }
@@ -109,5 +109,11 @@ public class Station : MonoBehaviour
     {
         _expansionBlueprint = null;
         RefreshExpandCommand();
+    }
+
+    public bool CanBuildAtLocation(CubeCoord cubecoord)
+    {
+        return _hexaGrid[cubecoord] == null;
+        // TODO: check navmesh
     }
 }

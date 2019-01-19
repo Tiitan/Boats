@@ -31,6 +31,7 @@ public class GizmoButton : MonoBehaviour
             if (_mouseover)
                 GizmoButtonPressed?.Invoke(this, System.EventArgs.Empty);
             _mouseDown = false;
+            UpdateMaterial();
         }
         if (_mouseover && Input.GetButtonDown("GizmoSubmit"))
         {

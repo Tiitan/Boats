@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4548615556687953014}
   - component: {fileID: 5503581613423617970}
   m_Layer: 13
-  m_Name: Blueprint
+  m_Name: DefaultBlueprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,9 +47,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fd8bf248c8b0414f8ad8a287f34b89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _structurePrefab: {fileID: 4611852992706598946, guid: e5fb6e38fb23b4e4f8e80bcd7b82e41e,
+  _structurePrefab: {fileID: 1708582691672428509, guid: 6f02fef848e2bea4192ea75c8f4f9412,
     type: 3}
   _finalizeDuration: 1
+  _tooltipTitle: Expand blueprint
+  _tooltipDescription: Expanding this station
   _requiredItems:
   - _type: 0
     _quantity: 40

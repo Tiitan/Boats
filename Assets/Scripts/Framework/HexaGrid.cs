@@ -10,6 +10,12 @@ namespace Framework
             _innerGrid = new T[q, r];
         }
 
+        public T this[CubeCoord c]
+        {
+            get => this[c.Q, c.R];
+            set => this[c.Q, c.R] = value;
+        }
+
         public T this[int q, int r]
         {
             get

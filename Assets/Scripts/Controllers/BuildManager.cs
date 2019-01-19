@@ -3,6 +3,7 @@
 
 using System;
 using EventArgs;
+using Framework;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Controllers
 
         private bool _isObstructed;
         private bool _stationProximity;
+        private int _direction;
 
         [SerializeField] private GameObject _cursorPrefab;
         [SerializeField] private GameObject _blueprintPrefab;
@@ -74,12 +76,21 @@ namespace Controllers
                 }
             }
 
+            // FIXME: duplicate with StationExpanderControl
+            if (Mathf.Abs(Input.GetAxis("Rotate")) > Mathf.Epsilon)
+            {
+                _direction = _direction + (Input.GetAxis("Rotate") > 0 ? 1 : -1);
+                _direction = (_direction + 6) % 6;
+                _cursor.transform.rotation = Quaternion.Euler(0, _direction * 60, 0);
+            }
+
             if (Input.GetButtonUp("GizmoCancel"))
                 _controllerManager.UnRegister(this);
         }
 
         public void GotFocus()
         {
+            _direction = 0;
             if (_cursor == null)
                 _cursor = Instantiate(_cursorPrefab, transform);
         }

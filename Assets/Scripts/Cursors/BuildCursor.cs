@@ -4,33 +4,35 @@
 using Controllers;
 using EventArgs;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class BuildCursor : MonoBehaviour
+namespace Cursors
 {
-    private BuildManager _buildManager;
-
-    [SerializeField] private Material _material;
-
-    [SerializeField] private Color _canBuildColor;
-    [SerializeField] [FormerlySerializedAs("_canNotBuildColor")] private Color _obstructedColor;
-    [SerializeField] private Color _proximityColor;
-
-    public void Start()
+    public class BuildCursor : MonoBehaviour
     {
-        _buildManager = GetComponentInParent<BuildManager>();
-        _buildManager.CanBuildAtLocationChanged += BuildManagerOnCanBuildAtLocationChanged;
-        _material.color = _canBuildColor;
-    }
+        private BuildManager _buildManager;
 
-    public void OnDestroy()
-    {
-        _buildManager.CanBuildAtLocationChanged -= BuildManagerOnCanBuildAtLocationChanged;
-    }
+        [SerializeField] private Material _material;
 
-    private void BuildManagerOnCanBuildAtLocationChanged(object sender, CanBuildAtLocationChangedArg canBuildAtLocationChangedArg)
-    {
-        _material.color = canBuildAtLocationChangedArg.IsObstructed ? 
-            _obstructedColor : (canBuildAtLocationChangedArg.IsTooClose ? _proximityColor : _canBuildColor);
+        [SerializeField] private Color _canBuildColor;
+        [SerializeField] private Color _obstructedColor;
+        [SerializeField] private Color _proximityColor;
+
+        public void Start()
+        {
+            _buildManager = GetComponentInParent<BuildManager>();
+            _buildManager.CanBuildAtLocationChanged += OnCanBuildAtLocationChanged;
+            _material.color = _canBuildColor;
+        }
+
+        public void OnDestroy()
+        {
+            _buildManager.CanBuildAtLocationChanged -= OnCanBuildAtLocationChanged;
+        }
+
+        private void OnCanBuildAtLocationChanged(object sender, CanBuildAtLocationChangedArg canBuildAtLocationChangedArg)
+        {
+            _material.color = canBuildAtLocationChangedArg.IsObstructed ? 
+                _obstructedColor : (canBuildAtLocationChangedArg.IsTooClose ? _proximityColor : _canBuildColor);
+        }
     }
 }

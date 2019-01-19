@@ -4,6 +4,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Enums;
+using Framework;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
@@ -13,6 +15,8 @@ public class Blueprint : MonoBehaviour
 {
     [SerializeField] private GameObject _structurePrefab;
     [SerializeField] private float _finalizeDuration = 1.0f;
+    [SerializeField] private string _tooltipTitle;
+    [SerializeField] private string _tooltipDescription;
 
     [SerializeField] List<Item> _requiredItems = new List<Item>();
     private readonly List<ItemViewModel> _items = new List<ItemViewModel>();
@@ -20,8 +24,6 @@ public class Blueprint : MonoBehaviour
     private bool _buildingFinished;
 
     private CommandViewModel _cancelCommand;
-
-    private Station _station;
 
     private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties =
         new Dictionary<string, TooltipPropertyViewModel>();
@@ -35,18 +37,6 @@ public class Blueprint : MonoBehaviour
                 where requiredItem.Quantity > item.Quantity
                 select new Item(requiredItem.Type, requiredItem.Quantity - item.Quantity);
         }
-    }
-
-    /// <summary>
-    /// Initialize this blueprint as an existing station expansion.
-    /// optionnal: will create a new station on completion if not called.
-    /// </summary>
-    /// <param name="station">parent station</param>
-    /// <param name="structurePrefab">structure prefab override</param>
-    public void InitializeExpand(Station station, GameObject structurePrefab)
-    {
-        _station = station;
-        _structurePrefab = structurePrefab;
     }
 
     public int Build(ItemType type, int quantity)
@@ -80,7 +70,7 @@ public class Blueprint : MonoBehaviour
     {
         if (_buildingFinished)
             return;
-        _station?.OnExpandCanceled();
+        GetComponentInParent<Station>()?.OnExpandCanceled();
         UiManager.Instance.Tooltip.Hide(transform);
         Destroy(gameObject);
     }
@@ -88,8 +78,14 @@ public class Blueprint : MonoBehaviour
     public IEnumerator FinalizeBuilding()
     {
         _buildingFinished = true;
-        var expand = Instantiate(_structurePrefab, transform.position, transform.rotation, _station?.transform);
-        _station?.OnExpandFinalized(expand);
+
+        var station = GetComponentInParent<Station>();
+        var expand = Instantiate(_structurePrefab, transform.position, Quaternion.identity, station?.transform);
+        var platform = expand.GetComponentInChildren<Platform>();
+        platform.transform.rotation = transform.rotation;
+
+        station?.OnExpandFinalized(expand);
+
         LevelManager.Instance.NavMeshSurface.BuildNavMesh();
         UiManager.Instance.Tooltip.Hide(transform);
         GetComponent<Selectable>().DisableSelection();
@@ -121,11 +117,7 @@ public class Blueprint : MonoBehaviour
         if (!_buildingFinished)
         {
             UiManager.Instance.Tooltip.Show(
-                transform, 20,
-                _station == null ? "Station Blueprint" : "Expand blueprint",
-                _station == null ? "Building a new station": "Expanding this station", 
-                _tooltipProperties.Values
-            );
+                transform, 20, _tooltipTitle, _tooltipDescription, _tooltipProperties.Values);
         }
     }
 

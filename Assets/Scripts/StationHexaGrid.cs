@@ -1,28 +1,29 @@
 ﻿using System.Collections.Generic;
+using Enums;
 using Framework;
-using static Framework.HexaTool;
 using UnityEngine;
 
 public class StationHexaGrid
 {
     // TODO dynamic grid: X * 2 + 1 where X = max hexagon distance
-    private readonly CubeCoord _offset = new CubeCoord(8, 8);
+    private static readonly CubeCoord Offset = new CubeCoord(2, 2);
 
-    private readonly HexaGrid<GameObject> _grid;
+    private readonly HexaGrid<IHexaGridItem> _grid;
 
-    public StationHexaGrid(GameObject rootPlatform)
+    public IHexaGridItem this[CubeCoord c] => _grid[c + Offset];
+
+    public StationHexaGrid(IHexaGridItem rootPlatform)
     {
-        _grid = new HexaGrid<GameObject>(_offset.Q * 2 + 1, _offset.R * 2 + 1)
+        _grid = new HexaGrid<IHexaGridItem>(Offset.Q * 2 + 1, Offset.R * 2 + 1)
         {
-            [_offset.Q, _offset.R] = rootPlatform
+            [Offset.Q, Offset.R] = rootPlatform
         };
     }
 
-    public void Expand(GameObject expand)
+    public void Expand(IHexaGridItem expand)
     {
-        CubeCoord cubeCoord = LocalToCubeCoord(expand.transform.localPosition);
         // TODO dynamic grid: resize then use position + X
-        _grid[_offset.Q + cubeCoord.Q, _offset.R + cubeCoord.R] = expand;
+        _grid[Offset + expand.CubeCoordLocalPosition] = expand;
     }
 
     public List<Vector3> GetExtansionLocations()
@@ -32,30 +33,32 @@ public class StationHexaGrid
         for (int q = 0; q < _grid.GetLength(0); q++)
         for (int r = 0; r < _grid.GetLength(1); r++)
         {
-            if (_grid[q, r] != null) continue;
-            FillNeighbors(neighborsBuffer, q, r);
+            var coord = new CubeCoord(q, r);
+            if (_grid[coord] != null) continue;
+            FillNeighbors(neighborsBuffer, coord);
             bool foundLink = false, isLockedHexa = false;
             foreach (var neighbor in neighborsBuffer)
             {
-                if (_grid[neighbor.Q, neighbor.R] != null)
+                if (_grid[neighbor] == null)
+                        continue;
+
+                if (_grid[neighbor].Type == HexaType.Port &&
+                    neighbor + _grid[neighbor].Direction == coord)
                 {
-                    // TODO check platform type and orientation for LockedHexa
-                    foundLink = true;
+                    isLockedHexa = true;
+                    break;
                 }
+                foundLink = true;
             }
             if (foundLink && !isLockedHexa)
-                extensionLocations.Add(CubeCoordToLocal(q - _offset.Q, r - _offset.R));
+                extensionLocations.Add((coord - Offset).ToVector());
         }
         return extensionLocations;
     }
 
-    private void FillNeighbors(CubeCoord[] neighborsBuffer, int q, int r)
+    private void FillNeighbors(CubeCoord[] neighborsBuffer, CubeCoord coord)
     {
-        neighborsBuffer[0] = new CubeCoord(q + 0, r + 1);
-        neighborsBuffer[1] = new CubeCoord(q + 0, r - 1);
-        neighborsBuffer[2] = new CubeCoord(q - 1, r + 0);
-        neighborsBuffer[3] = new CubeCoord(q + 1, r + 0);
-        neighborsBuffer[4] = new CubeCoord(q - 1, r + 1);
-        neighborsBuffer[5] = new CubeCoord(q + 1, r - 1);
+        for (int i = 0; i < 6; i++)
+            neighborsBuffer[i] = CubeCoord.Directions[i] + coord;
     }
 }
