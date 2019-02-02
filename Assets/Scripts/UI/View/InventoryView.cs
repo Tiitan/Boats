@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using ScriptableObjects;
 using UI.ViewModel;
 using UnityEngine;
 
@@ -12,13 +13,13 @@ namespace UI.View
     public class InventoryView : MonoBehaviour
     {
         private readonly List<ItemView> _itemsView = new List<ItemView>();
-        private IReadOnlyObservableDictionary<ItemType, IItemViewModel> _itemsVm;
+        private IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> _itemsVm;
 
         [SerializeField] private RectTransform _itemsTransform;
 
         [SerializeField] private GameObject _itemPrefab;
 
-        public void Initialize(IReadOnlyObservableDictionary<ItemType, IItemViewModel> itemsVm)
+        public void Initialize(IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> itemsVm)
         {
             _itemsVm = itemsVm;
             itemsVm.CollectionChanged += ItemsVmOnCollectionChanged;
@@ -36,12 +37,12 @@ namespace UI.View
         {
             // Add
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
-                foreach (var key in notifyCollectionChangedEventArgs.NewItems.Cast<ItemType>())
+                foreach (var key in notifyCollectionChangedEventArgs.NewItems.Cast<ItemTypeObject>())
                     _itemsView.Add(ViewManager.Instantiate<ItemView, IItemViewModel>(_itemsVm[key], _itemPrefab, _itemsTransform));
 
             // Remove
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
-                foreach (var key in notifyCollectionChangedEventArgs.OldItems.Cast<ItemType>())
+                foreach (var key in notifyCollectionChangedEventArgs.OldItems.Cast<ItemTypeObject>())
                 {
                     var view = _itemsView.First(x => x.ItemVm.Type == key);
                     _itemsView.Remove(view);

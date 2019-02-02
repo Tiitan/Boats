@@ -9,7 +9,7 @@ namespace BoatActions
 {
     public abstract class BoatAction : MonoBehaviour
     {
-        [SerializeField] private float _actionFrequency = 0.7f;
+        [SerializeField] private float _actionFrequency = 1f;
         [SerializeField] private int _range = 20;
         [SerializeField] private int _quantity = 1;
 
@@ -22,10 +22,10 @@ namespace BoatActions
 
         /// <summary>Try to continue an action. Called each update</summary>
         /// <returns>Action over ?</returns>
-        public bool TryExecute(MonoBehaviour target, Inventory inventory)
+        public bool TryExecute(IBoatActionTarget target, Inventory inventory)
         {
-            if (Vector3.Distance(transform.position, target.transform.position) < _range && 
-                _actionFrequency <= Time.timeSinceLevelLoad - _lastExecute)
+            if (Vector3.Distance(transform.position, target.transform.position) < _range &&
+                _lastExecute + _actionFrequency * target.ActionFrequencyMultiplier < Time.timeSinceLevelLoad)
             {
                 _lastExecute = Time.timeSinceLevelLoad;
                 (bool over, bool succeed) = Execute(target, inventory);
@@ -37,7 +37,7 @@ namespace BoatActions
             return false;
         }
 
-        protected abstract (bool over, bool succeed) Execute(MonoBehaviour target, Inventory inventory);
+        protected abstract (bool over, bool succeed) Execute(IBoatActionTarget target, Inventory inventory);
 
         public virtual void OnDrawGizmosSelected()
         {

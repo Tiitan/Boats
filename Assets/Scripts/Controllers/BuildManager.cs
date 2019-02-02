@@ -3,7 +3,7 @@
 
 using System;
 using EventArgs;
-using Framework;
+using ScriptableObjects;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
@@ -24,7 +24,7 @@ namespace Controllers
         private int _direction;
 
         [SerializeField] private GameObject _cursorPrefab;
-        [SerializeField] private GameObject _blueprintPrefab;
+        [SerializeField] private StructureTypeObject _stationStructureType;
 
         public event EventHandler<CanBuildAtLocationChangedArg> CanBuildAtLocationChanged;
 
@@ -64,7 +64,9 @@ namespace Controllers
 
                 if (!isObstructed && !stationProximity && Input.GetButtonUp("GizmoSubmit"))
                 {
-                    Instantiate(_blueprintPrefab, _cursor.transform.position, _cursor.transform.rotation);
+                    var stationBlueprint = Instantiate(_stationStructureType.BlueprintPrefab,
+                        _cursor.transform.position, _cursor.transform.rotation);
+                    stationBlueprint.GetComponent<Blueprint>().Initialize(_stationStructureType);
                     _controllerManager.UnRegister(this);
                 }
 

@@ -4,47 +4,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Enums;
-using Framework;
+using BoatActions;
+using ScriptableObjects;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
 
 [RequireComponent(typeof(Selectable))]
-public class Blueprint : MonoBehaviour
+public class Blueprint : MonoBehaviour, IBoatActionTarget
 {
-    [SerializeField] private GameObject _structurePrefab;
     [SerializeField] private float _finalizeDuration = 1.0f;
-    [SerializeField] private string _tooltipTitle;
-    [SerializeField] private string _tooltipDescription;
 
-    [SerializeField] List<Item> _requiredItems = new List<Item>();
+    private StructureTypeObject _structureType;
     private readonly List<ItemViewModel> _items = new List<ItemViewModel>();
-
     private bool _buildingFinished;
-
     private CommandViewModel _cancelCommand;
+    private TooltipViewModel _tooltipVm;
 
-    private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties =
-        new Dictionary<string, TooltipPropertyViewModel>();
+    public float ActionFrequencyMultiplier => 1f;
 
     public IEnumerable<Item> MissingItems
     {
         get
         {
-            return from requiredItem in _requiredItems
-                let item = _items.FirstOrDefault(x => x.Type == requiredItem.Type)?.Item ?? default
-                where requiredItem.Quantity > item.Quantity
-                select new Item(requiredItem.Type, requiredItem.Quantity - item.Quantity);
+            return from requiredItem in _structureType.ConstructionCost
+                   let item = _items.FirstOrDefault(x => x.Type == requiredItem.Type)?.Item ?? default
+                   where requiredItem.Quantity > item.Quantity
+                   select new Item(requiredItem.Type, requiredItem.Quantity - item.Quantity);
         }
     }
 
-    public int Build(ItemType type, int quantity)
+    public void Initialize(StructureTypeObject structureType)
+    {
+        _structureType = structureType;
+
+        // Tooltip
+        _tooltipVm = new TooltipViewModel(_structureType.BlueprintTooltip);
+        foreach (var requiredItem in _structureType.ConstructionCost)
+        {
+            _tooltipVm.EditableProperties.Add(requiredItem.Type.Name,
+                new TooltipPropertyViewModel(requiredItem.Type.Name, GetFormattedQuantity(requiredItem)));
+        }
+    }
+
+    public int Build(ItemTypeObject type, int quantity)
     {
         if (_buildingFinished)
             return 0;
 
-        var requiredItem = _requiredItems.FirstOrDefault(x => x.Type == type);
+        var requiredItem = _structureType.ConstructionCost.FirstOrDefault(x => x.Type == type);
         var item = _items.FirstOrDefault(x => x.Type == type);
 
         if (requiredItem.Quantity <= item?.Quantity || quantity == 0)
@@ -58,7 +66,7 @@ public class Blueprint : MonoBehaviour
         var maxQuantity = requiredItem.Quantity - item.Quantity;
         var usedQuantity = maxQuantity > quantity ? quantity : maxQuantity;
         item.Drop(usedQuantity);
-        _tooltipProperties[type.ToString()].Value = GetFormattedQuantity(requiredItem);
+        _tooltipVm.EditableProperties[type.Name].Value = GetFormattedQuantity(requiredItem);
 
         if (!MissingItems.Any())
             StartCoroutine(FinalizeBuilding());
@@ -80,9 +88,8 @@ public class Blueprint : MonoBehaviour
         _buildingFinished = true;
 
         var station = GetComponentInParent<Station>();
-        var expand = Instantiate(_structurePrefab, transform.position, Quaternion.identity, station?.transform);
-        var platform = expand.GetComponentInChildren<Platform>();
-        platform.transform.rotation = transform.rotation;
+        var expand = Instantiate(_structureType.StructurePrefab, transform.position,
+            transform.rotation, station?.transform);
 
         station?.OnExpandFinalized(expand);
 
@@ -100,13 +107,6 @@ public class Blueprint : MonoBehaviour
 
     private void Start()
     {
-        // Tooltip
-        foreach (var requiredItem in _requiredItems)
-        {
-            _tooltipProperties.Add(requiredItem.Type.ToString(), 
-                new TooltipPropertyViewModel(requiredItem.Type.ToString(), GetFormattedQuantity(requiredItem)));
-        }
-
         // Command
         _cancelCommand = new CommandViewModel("Cancel build", CancelBlueprintCommand);
         GetComponent<Selectable>().Commands = new[] { _cancelCommand };
@@ -116,8 +116,7 @@ public class Blueprint : MonoBehaviour
     {
         if (!_buildingFinished)
         {
-            UiManager.Instance.Tooltip.Show(
-                transform, 20, _tooltipTitle, _tooltipDescription, _tooltipProperties.Values);
+            UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
         }
     }
 

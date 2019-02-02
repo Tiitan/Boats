@@ -3,6 +3,7 @@
     public enum HexaType
     {
         Full,
-        Port
+        Port,
+        Half
     }
 }

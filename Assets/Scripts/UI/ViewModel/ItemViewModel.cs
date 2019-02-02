@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
+using ScriptableObjects;
 
 namespace UI.ViewModel
 {
     public interface IItemViewModel : INotifyPropertyChanged
     {
-        ItemType Type { get; }
+        ItemTypeObject Type { get; }
 
         int Quantity { get; }
     }
@@ -13,7 +14,7 @@ namespace UI.ViewModel
     {
         private Item _item;
 
-        public ItemType Type => _item.Type;
+        public ItemTypeObject Type => _item.Type;
         public int Quantity => _item.Quantity;
 
         public Item Item
@@ -26,7 +27,7 @@ namespace UI.ViewModel
             }
         }
 
-        public ItemViewModel(ItemType type, int quantity)
+        public ItemViewModel(ItemTypeObject type, int quantity)
         {
             _item = new Item(type, quantity);
         }

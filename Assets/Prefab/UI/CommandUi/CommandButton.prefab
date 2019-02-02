@@ -133,8 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 8099028653932994841}
   _button: {fileID: 5955117843710256860}
-  _enabledcolor: {r: 0, g: 0, b: 0, a: 0}
-  _disabledcolor: {r: 0, g: 0, b: 0, a: 0}
+  _subCommandPrefab: {fileID: 7479555814637178182, guid: e2dfc68d13a31564b9119eeea5f9a51a,
+    type: 3}
 --- !u!1 &6607541996723439784
 GameObject:
   m_ObjectHideFlags: 0

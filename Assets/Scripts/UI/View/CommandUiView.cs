@@ -11,29 +11,33 @@ namespace UI.View
     {
         [SerializeField] private GameObject _commandPrefab;
 
-        readonly Dictionary<ICommandViewModel, GameObject> _commands = new Dictionary<ICommandViewModel, GameObject>();
+        private readonly Dictionary<ICommandViewModel, CommandView> _commands = 
+            new Dictionary<ICommandViewModel, CommandView>();
 
-        public void Register(ICommandViewModel commandVm)
+        public void Register(ICommandViewModel commandVm, CommandView parent = null)
         {
             if (_commands.ContainsKey(commandVm)) return;
-            var commandObject = Instantiate(_commandPrefab, transform.position, transform.rotation, transform);
-            var commmandView = commandObject.GetComponent<CommandView>();
-            commmandView.Initialize(commandVm);
-            _commands.Add(commandVm, commandObject);
+            var commandView = ViewManager.Instantiate<CommandView, ICommandViewModel>(
+                commandVm, _commandPrefab, transform);
+            _commands.Add(commandVm, commandView);
+
+            // CommandView parent in case of subcommand
+            if (parent != null)
+                commandView.Button.onClick.AddListener(parent.SubCommandPressed);
         }
 
         public void UnRegister(ICommandViewModel commandVm)
         {
             if (!_commands.ContainsKey(commandVm)) return;
             if (_commands[commandVm] != null)
-                Destroy(_commands[commandVm]);
+                Destroy(_commands[commandVm].gameObject);
             _commands.Remove(commandVm);
         }
 
-        public void Register(IEnumerable<ICommandViewModel> commandVms)
+        public void Register(IEnumerable<ICommandViewModel> commandVms, CommandView parent = null)
         {
             foreach (var commandVm in commandVms)
-                Register(commandVm);
+                Register(commandVm, parent);
         }
 
         public void UnRegister(IEnumerable<ICommandViewModel> commandVms)

@@ -1,7 +1,9 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UI.ViewModel;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,33 +12,33 @@ namespace UI.View
 {
     public class TooltipView : MonoBehaviour
     {
-        private Transform _target;
-
-        private readonly List<TooltipPropertyView> _propertyViews = new List<TooltipPropertyView>();
-
         [SerializeField] private Text _textTitle;
-
         [SerializeField] private Text _textDescription;
-
         [SerializeField] private RectTransform _propertiesTransform;
-
         [SerializeField] private GameObject _propertyPrefab;
+
+        private Transform _target;
+        private readonly List<TooltipPropertyView> _propertiesViews = new List<TooltipPropertyView>();
+        private ITooltipViewModel _tooltipVm;
+
+
 
         private RectTransform RectTransform => (RectTransform)transform;
 
-        public void Show(Transform target, int pixelRadius, string title = null, 
-            string description = null, IEnumerable<ITooltipPropertyViewModel> propertyInfos = null)
+        public void Show(Transform target, int pixelRadius, ITooltipViewModel tooltipVm)
         {
             if (_target != null)
                 Hide(_target);
 
-            _textTitle.text = title;
-            _textDescription.text = description;
+            _textTitle.text = tooltipVm.Name;
+            _textDescription.text = tooltipVm.Description;
 
-            if (propertyInfos != null)
-                foreach (var propertyVm in propertyInfos)
-                    _propertyViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(
-                        propertyVm, _propertyPrefab, _propertiesTransform));
+            _tooltipVm = tooltipVm;
+            _tooltipVm.Properties.CollectionChanged += PropertiesOnCollectionChanged;
+
+            foreach (var propertyVm in tooltipVm.Properties.Values)
+                _propertiesViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(
+                    propertyVm, _propertyPrefab, _propertiesTransform));
 
             _target = target;
             gameObject.SetActive(true);
@@ -51,12 +53,20 @@ namespace UI.View
         {
             if (target != _target) return;
 
-            foreach (var propertyView in _propertyViews)
+            foreach (var propertyView in _propertiesViews)
                 GameObject.Destroy(propertyView.gameObject);
-            _propertyViews.Clear();
+            _propertiesViews.Clear();
+
+            _tooltipVm.Properties.CollectionChanged -= PropertiesOnCollectionChanged;
+            _tooltipVm = null;
 
             _target = null;
             gameObject.SetActive(false);
+        }
+
+        private void PropertiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            // TODO: update _propertiesViews
         }
     }
 }

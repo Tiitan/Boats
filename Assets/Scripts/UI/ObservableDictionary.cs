@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Framework;
+using UI.ViewModel;
 
 namespace UI
 {

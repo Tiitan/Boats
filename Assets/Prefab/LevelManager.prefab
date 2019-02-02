@@ -239,8 +239,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cursorPrefab: {fileID: 5164128855431119544, guid: ce3b54238ec6e0b44b36fb0c69b62d33,
     type: 3}
-  _blueprintPrefab: {fileID: 2060028657452309071, guid: b56dad4c6acf4ac48965366780d436d3,
-    type: 3}
+  _stationStructureType: {fileID: 11400000, guid: 5dfa5e6b5f4462c4aa981bd49844a4e9,
+    type: 2}
 --- !u!1 &7886710417499140568
 GameObject:
   m_ObjectHideFlags: 0

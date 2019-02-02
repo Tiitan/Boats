@@ -10,6 +10,7 @@ namespace UI
     public static class ViewManager
     {
         public static TView Instantiate<TView, TViewModel> (TViewModel viewModel, GameObject viewPrefab, Transform parent)
+            where TView : IView<TViewModel>
         {
             var propertyGameObject = Object.Instantiate(viewPrefab, parent);
             var view = propertyGameObject.GetComponent<TView>();

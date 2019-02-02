@@ -412,7 +412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inventory:
     _segment: 2
-    _segmentSize: 25
+    _segmentSize: 250
 --- !u!114 &5993679606510974420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,9 +425,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 159d158210ff4f84d832f2dc03926b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actionFrequency: 0.7
+  _actionFrequency: 1
   _range: 30
-  _quantity: 4
+  _quantity: 5
 --- !u!114 &5993610452008716696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,9 +440,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7183badc58611a42b0e1549aad78953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actionFrequency: 0.7
-  _range: 20
-  _quantity: 2
+  _actionFrequency: 1
+  _range: 30
+  _quantity: 4
 --- !u!54 &2855995137237618136
 Rigidbody:
   m_ObjectHideFlags: 0

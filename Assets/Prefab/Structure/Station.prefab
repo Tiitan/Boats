@@ -56,6 +56,8 @@ MonoBehaviour:
     type: 3}
   _portExpansionBlueprintPrefab: {fileID: 3217329660105652573, guid: ecd1c726802d63841af6841ae57bf429,
     type: 3}
+  _expandIcon: {fileID: 0}
+  _structureTypeList: {fileID: 11400000, guid: 241748474ab4e27439e017d928217a70, type: 2}
 --- !u!114 &8369849318051656091
 MonoBehaviour:
   m_ObjectHideFlags: 0

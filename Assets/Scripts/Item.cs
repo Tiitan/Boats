@@ -2,27 +2,23 @@
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
 using System;
+using ScriptableObjects;
 using UnityEngine;
-
-public enum ItemType
-{
-    Ressource1
-}
 
 [Serializable]
 public struct Item
 {
     [SerializeField]
-    private ItemType _type;
+    private ItemTypeObject _type;
 
     [SerializeField]
     private int _quantity;
 
-    public ItemType Type => _type;
+    public ItemTypeObject Type => _type;
 
     public int Quantity => _quantity;
 
-    public Item(ItemType type, int quantity) : this()
+    public Item(ItemTypeObject type, int quantity) : this()
     {
         _type = type;
         _quantity = quantity;

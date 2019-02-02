@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using ScriptableObjects;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
@@ -10,7 +11,7 @@ using UnityEngine;
 [Serializable]
 public class Inventory
 {
-    readonly ObservableDictionary<ItemType, ItemViewModel> _items = new ObservableDictionary<ItemType, ItemViewModel>();
+    readonly ObservableDictionary<ItemTypeObject, ItemViewModel> _items = new ObservableDictionary<ItemTypeObject, ItemViewModel>();
 
     [SerializeField]
     private int _segment;
@@ -18,7 +19,7 @@ public class Inventory
     [SerializeField]
     private int _segmentSize;
 
-    public IReadOnlyObservableDictionary<ItemType, IItemViewModel> Items => _items;
+    public IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> Items => _items;
 
     // Max number of different unique resources.
     public int Segment => _segment;
@@ -28,7 +29,7 @@ public class Inventory
 
     public int UsedSegment => _items.Values.Sum(x => 1 + x.Quantity / _segmentSize);
 
-    public int Add(ItemType type, int quantity)
+    public int Add(ItemTypeObject type, int quantity)
     {
         var availableSpace = AvailableSpace(type);
         var dropQuantity = availableSpace < quantity ? availableSpace : quantity;
@@ -39,7 +40,7 @@ public class Inventory
         return quantity - dropQuantity;
     }
 
-    public int Pick(ItemType type, int quantity)
+    public int Pick(ItemTypeObject type, int quantity)
     {
         if (!_items.ContainsKey(type))
             return 0;
@@ -50,7 +51,7 @@ public class Inventory
         return quantity;
     }
 
-    public int AvailableSpace(ItemType type)
+    public int AvailableSpace(ItemTypeObject type)
     {
         var spaceAvailable = (_segment - UsedSegment) * _segmentSize;
         if (_items.ContainsKey(type))
@@ -58,7 +59,7 @@ public class Inventory
         return spaceAvailable;
     }
 
-    public int Quantity(ItemType type)
+    public int Quantity(ItemTypeObject type)
     {
         if (_items.ContainsKey(type))
             return _items[type].Quantity;

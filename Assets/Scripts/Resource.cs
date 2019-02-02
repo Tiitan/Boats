@@ -1,31 +1,55 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
+#pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
+
+using BoatActions;
+using ScriptableObjects;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
 
-public class Resource : MonoBehaviour
+public class Resource : MonoBehaviour, IBoatActionTarget
 {
-    [SerializeField]
-    private Item _resourceItem;
+    [SerializeField] private ItemTypeObject _type;
+    [SerializeField] private int _quantity;
+    [SerializeField] private float _harvestFrequencyMultiplier;
+    [SerializeField] private float _regenFrequency;
 
-    public ItemType Type => _resourceItem.Type;
-    public int Quantity => _resourceItem.Quantity;
+    private float _regenTime;
+    private int _maxQuantity;
 
-    private readonly Dictionary<string, TooltipPropertyViewModel> _tooltipProperties = new Dictionary<string, TooltipPropertyViewModel>
+    public ItemTypeObject Type => _type;
+    public int Quantity => _quantity;
+    public float ActionFrequencyMultiplier => _harvestFrequencyMultiplier;
+
+    private TooltipViewModel _tooltipVm;
+
+    void Start()
     {
-        {nameof(Type), new TooltipPropertyViewModel("Type", string.Empty) },
-        {nameof(Quantity), new TooltipPropertyViewModel("Quantity", string.Empty) }
-    };
+        _maxQuantity = _quantity;
+        _tooltipVm = new TooltipViewModel(
+            _type.Name, 
+            _type.Description,
+            new ObservableDictionary<string, TooltipPropertyViewModel>
+            {
+                {nameof(Type), new TooltipPropertyViewModel("Type", Type.Name) },
+                {nameof(Quantity), new TooltipPropertyViewModel("Quantity", Quantity.ToString()) }
+            }
+        );
+    }
 
-    private void Start()
+    void Update()
     {
-        _tooltipProperties[nameof(Type)].Value = Type.ToString();
-        _tooltipProperties[nameof(Quantity)].Value = Quantity.ToString();
+        if (_quantity < _maxQuantity && _regenTime + _regenFrequency < Time.timeSinceLevelLoad)
+        {
+            _quantity += 1;
+            _regenTime = Time.timeSinceLevelLoad;
+            _tooltipVm.EditableProperties[nameof(Quantity)].Value = Quantity.ToString();
+        }
     }
 
     private void OnMouseEnter()
     {
-        UiManager.Instance.Tooltip.Show(transform, 20, Type.ToString(), "resource description", _tooltipProperties.Values);
+        UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
     }
 
     private void OnMouseExit()
@@ -35,8 +59,13 @@ public class Resource : MonoBehaviour
 
     public int Harvest(int value)
     {
-        _resourceItem = _resourceItem.Pick(ref value);
-        _tooltipProperties[nameof(Quantity)].Value = Quantity.ToString();
+        if (_quantity == _maxQuantity)
+            _regenTime = Time.time;
+
+        if (_quantity < value)
+            value = _quantity;
+        _quantity -= value;
+        _tooltipVm.EditableProperties[nameof(Quantity)].Value = Quantity.ToString();
         return value;
     }
 }

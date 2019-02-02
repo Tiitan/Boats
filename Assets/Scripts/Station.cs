@@ -2,9 +2,11 @@
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
 using System.Collections.Generic;
+using System.Linq;
 using Controllers;
 using Enums;
 using Framework;
+using ScriptableObjects;
 using UI;
 using UI.ViewModel;
 using UnityEngine;
@@ -12,16 +14,16 @@ using UnityEngine;
 [RequireComponent(typeof(Selectable), typeof(StationExpanderControl))]
 public class Station : MonoBehaviour
 {
-    [SerializeField] GameObject _expansionBlueprintPrefab;
-    [SerializeField] GameObject _portExpansionBlueprintPrefab;
+    [SerializeField] Texture2D _expandIcon;
+    [SerializeField] StructureTypeObjectList _structureTypeList;
 
-    private GameObject _expansionBlueprint;
+    private Blueprint _expansionBlueprint;
 
     private CommandViewModel _expandCommand;
-    private CommandViewModel _portExpandCommand;
+    private ObservableCollection<CommandViewModel> _subCommands;
 
     private StationExpanderControl _stationExpanderControl;
-    private GameObject _selectedBlueprint;
+    private StructureTypeObject _selectedStructureType;
 
     private StationHexaGrid _hexaGrid;
 
@@ -32,10 +34,13 @@ public class Station : MonoBehaviour
 
         _stationExpanderControl = GetComponent<StationExpanderControl>();
 
+        _subCommands = new ObservableCollection<CommandViewModel>(
+            _structureTypeList.List.Where(x => x.IsBuildable)
+            .Select(x => new CommandViewModel(x.name, () => ExpandCommand(x))));
+
         // Command
-        _expandCommand = new CommandViewModel("Expand", ExpandCommand);
-        _portExpandCommand = new CommandViewModel("Port Expand", PortExpandCommand);
-        GetComponent<Selectable>().Commands = new[] { _expandCommand, _portExpandCommand};
+        _expandCommand = new CommandViewModel("Expand", _subCommands);
+        GetComponent<Selectable>().Commands = new[] { _expandCommand};
     }
 
     private void OnDestroy()
@@ -44,17 +49,10 @@ public class Station : MonoBehaviour
             LevelManager.Instance.StationsManager.UnRegister(this);
     }
 
-    private void ExpandCommand()
+    private void ExpandCommand(StructureTypeObject structureType)
     {
-        _selectedBlueprint = _expansionBlueprintPrefab;
-        _stationExpanderControl.Mode = HexaType.Full;
-        LevelManager.Instance.ControllerManager.ClaimControl(_stationExpanderControl);
-    }
-
-    private void PortExpandCommand()
-    {
-        _selectedBlueprint = _portExpansionBlueprintPrefab;
-        _stationExpanderControl.Mode = HexaType.Port;
+        _selectedStructureType = structureType;
+        _stationExpanderControl.Mode = structureType.HexaType;
         LevelManager.Instance.ControllerManager.ClaimControl(_stationExpanderControl);
     }
 
@@ -76,7 +74,8 @@ public class Station : MonoBehaviour
     /// <param name="direction">Quaternion direction</param>
     public void SubmitExtansion(Vector3 position, Quaternion direction)
     {
-        _expansionBlueprint = Instantiate(_selectedBlueprint, position, direction, transform);
+        _expansionBlueprint = Instantiate(_selectedStructureType.BlueprintPrefab, position, direction, transform).GetComponent<Blueprint>();
+        _expansionBlueprint.Initialize(_selectedStructureType);
         RefreshExpandCommand();
         // TODO add blueprint to _buildingHexaGrid
     }
@@ -88,7 +87,6 @@ public class Station : MonoBehaviour
     public void RefreshExpandCommand()
     {
         _expandCommand.Enabled = _expansionBlueprint == null;
-        _portExpandCommand.Enabled = _expansionBlueprint == null;
     }
 
     /// <summary>

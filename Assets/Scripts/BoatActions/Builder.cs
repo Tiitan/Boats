@@ -7,7 +7,7 @@ namespace BoatActions
     {
         /// <summary>Try to continue building. Called each update</summary>
         /// <returns>is building action over ? inventory empty/missmatch or structure finished</returns>
-        protected override (bool over, bool succeed) Execute(MonoBehaviour target, Inventory inventory)
+        protected override (bool over, bool succeed) Execute(IBoatActionTarget target, Inventory inventory)
         {
             var blueprint = (Blueprint)target;
 

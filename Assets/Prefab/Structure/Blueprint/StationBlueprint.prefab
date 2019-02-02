@@ -71,5 +71,11 @@ PrefabInstance:
       propertyPath: _tooltipDescription
       value: Building a new station
       objectReference: {fileID: 0}
+    - target: {fileID: 114670916824862978, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: _structureType
+      value: 
+      objectReference: {fileID: 11400000, guid: 5dfa5e6b5f4462c4aa981bd49844a4e9,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dda50557fc70b543b4454705ed43b66, type: 3}

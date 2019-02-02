@@ -20,7 +20,7 @@ namespace UI.View
             ItemVm = itemVm;
             itemVm.PropertyChanged += PropertyVm_OnPropertyChanged;
 
-            _textName.text = itemVm.Type.ToString();
+            _textName.text = itemVm.Type.Name;
             _textQuantity.text = itemVm.Quantity.ToString();
         }
 

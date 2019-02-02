@@ -1,5 +1,6 @@
 ﻿using Framework;
 using UI;
+using UI.ViewModel;
 using UnityEngine;
 
 public class CommandCenter : MonoBehaviour
@@ -8,14 +9,18 @@ public class CommandCenter : MonoBehaviour
 
     public string StationName { get; private set; }
 
+    private TooltipViewModel _tooltipVm;
+
     void Start()
     {
         StationName = NameGenerator.NumberToName(_stationCount++);
+        _tooltipVm = new TooltipViewModel($"Station {StationName}");
+
     }
 
     public void OnMouseEnter()
     {
-        UiManager.Instance.Tooltip.Show(transform, 20, $"Station {StationName}");
+        UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
     }
 
     public void OnMouseExit()
