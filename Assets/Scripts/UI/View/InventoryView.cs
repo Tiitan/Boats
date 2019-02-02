@@ -4,13 +4,16 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using ScriptableObjects;
+using Core;
+using Core.UiManager;
+using Framework.Mvvm;
+using Models.ScriptableObjects;
 using UI.ViewModel;
 using UnityEngine;
 
 namespace UI.View
 {
-    public class InventoryView : MonoBehaviour
+    public class InventoryView : MonoBehaviour, IInventoryView
     {
         private readonly List<ItemView> _itemsView = new List<ItemView>();
         private IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> _itemsVm;
@@ -18,6 +21,11 @@ namespace UI.View
         [SerializeField] private RectTransform _itemsTransform;
 
         [SerializeField] private GameObject _itemPrefab;
+
+        void Awake()
+        {
+            UiManager.Instance.Inventory = this;
+        }
 
         public void Initialize(IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> itemsVm)
         {

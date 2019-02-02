@@ -2,19 +2,25 @@
 #pragma warning disable IDE0044 // Disable "add readonly modifier" for SerializedField
 
 using System.Collections.Generic;
+using Core.UiManager;
 using UI.ViewModel;
 using UnityEngine;
 
 namespace UI.View
 {
-    public class CommandUiView : MonoBehaviour
+    public class CommandUiView : MonoBehaviour, ICommandUiView
     {
         [SerializeField] private GameObject _commandPrefab;
 
         private readonly Dictionary<ICommandViewModel, CommandView> _commands = 
             new Dictionary<ICommandViewModel, CommandView>();
 
-        public void Register(ICommandViewModel commandVm, CommandView parent = null)
+        void Awake()
+        {
+            UiManager.Instance.CommandUi = this;
+        }
+
+        public void Register(ICommandViewModel commandVm, object parent = null)
         {
             if (_commands.ContainsKey(commandVm)) return;
             var commandView = ViewManager.Instantiate<CommandView, ICommandViewModel>(
@@ -22,8 +28,9 @@ namespace UI.View
             _commands.Add(commandVm, commandView);
 
             // CommandView parent in case of subcommand
-            if (parent != null)
-                commandView.Button.onClick.AddListener(parent.SubCommandPressed);
+            var parentCommend = parent as CommandView; // cast to avoid adding CommandView to external interface
+            if (parentCommend != null)
+                commandView.Button.onClick.AddListener(parentCommend.SubCommandPressed);
         }
 
         public void UnRegister(ICommandViewModel commandVm)
@@ -34,7 +41,7 @@ namespace UI.View
             _commands.Remove(commandVm);
         }
 
-        public void Register(IEnumerable<ICommandViewModel> commandVms, CommandView parent = null)
+        public void Register(IEnumerable<ICommandViewModel> commandVms, object parent = null)
         {
             foreach (var commandVm in commandVms)
                 Register(commandVm, parent);

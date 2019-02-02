@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using UI;
-using UnityEngine;
+﻿using System.ComponentModel;
+using Framework.Mvvm;
+using Models;
 
 namespace UI.ViewModel
 {

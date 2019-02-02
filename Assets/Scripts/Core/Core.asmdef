@@ -1,0 +1,17 @@
+{
+    "name": "Core",
+    "references": [
+        "Framework",
+        "Model",
+        "UiViewModel",
+        "NavMeshComponents"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

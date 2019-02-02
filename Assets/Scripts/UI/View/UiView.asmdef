@@ -1,0 +1,17 @@
+{
+    "name": "UiView",
+    "references": [
+        "UiViewModel",
+        "Framework",
+        "Model",
+        "Core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

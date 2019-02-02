@@ -1,16 +1,16 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Core.UiManager;
 using UI.ViewModel;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.View
 {
-    public class TooltipView : MonoBehaviour
+    public class TooltipView : MonoBehaviour, ITooltipView
     {
         [SerializeField] private Text _textTitle;
         [SerializeField] private Text _textDescription;
@@ -21,9 +21,13 @@ namespace UI.View
         private readonly List<TooltipPropertyView> _propertiesViews = new List<TooltipPropertyView>();
         private ITooltipViewModel _tooltipVm;
 
-
-
         private RectTransform RectTransform => (RectTransform)transform;
+
+        void Awake()
+        {
+            UiManager.Instance.Tooltip = this;
+            gameObject.SetActive(false);
+        }
 
         public void Show(Transform target, int pixelRadius, ITooltipViewModel tooltipVm)
         {

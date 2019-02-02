@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
-using ScriptableObjects;
+using Models;
+using Models.ScriptableObjects;
 
 namespace UI.ViewModel
 {
