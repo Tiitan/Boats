@@ -34,15 +34,15 @@ namespace Core.Controllers
         private void Start()
         {
             _buildCommand = new CommandViewModel("New station", OnBuildCommand);
-            UiManager.UiManager.Instance.CommandUi.Register(_buildCommand);
+            CoreContainerViewModel.Instance.CommandUi.Register(_buildCommand);
             _stationManager = LevelManager.Instance.StationsManager;
             _controllerManager = LevelManager.Instance.ControllerManager;
         }
 
         private void OnDestroy()
         {
-            if (UiManager.UiManager.Instance != null && UiManager.UiManager.Instance.CommandUi != null)
-                UiManager.UiManager.Instance.CommandUi.UnRegister(_buildCommand);
+            if (CoreContainerViewModel.Instance != null && CoreContainerViewModel.Instance.CommandUi != null)
+                CoreContainerViewModel.Instance.CommandUi.UnRegister(_buildCommand);
         }
 
         private void OnBuildCommand()

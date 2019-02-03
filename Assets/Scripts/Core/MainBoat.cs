@@ -5,21 +5,21 @@ using Core.BoatActions;
 using Core.Controllers;
 using Core.EventArgs;
 using Enums;
-using UI;
+using UI.ViewModel;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Core
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(Harvester), typeof(Builder))]
+    [RequireComponent(typeof(Inventory))]
     public class MainBoat : MonoBehaviour
     {
         private NavMeshAgent _navMeshAgent;
         private PlayerControl _controller;
         private Harvester _harvester;
         private Builder _builder;
-
-        [SerializeField] private Inventory _inventory;
+        private Inventory _inventory;
 
         private Selectable _target;
 
@@ -29,11 +29,12 @@ namespace Core
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _harvester = GetComponent<Harvester>();
             _builder = GetComponent<Builder>();
+            _inventory = GetComponent<Inventory>();
 
             _controller.TargetLocationChanged += OnTargetLocationChanged;
             _controller.TargetCommandChanged += OnTargetCommandChanged;
 
-            UiManager.UiManager.Instance.Inventory.Initialize(_inventory.Items);
+            CoreContainerViewModel.Instance.MainInventory = _inventory;
         }
 
         void OnDestroy()

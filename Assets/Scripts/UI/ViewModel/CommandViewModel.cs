@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Framework.Mvvm;
 using UnityEngine;
 
 namespace UI.ViewModel

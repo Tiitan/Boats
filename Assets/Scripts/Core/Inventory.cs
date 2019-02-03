@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
-using System;
 using System.Linq;
 using Framework.Mvvm;
 using Models.ScriptableObjects;
@@ -10,8 +9,7 @@ using UnityEngine;
 
 namespace Core
 {
-    [Serializable]
-    public class Inventory
+    public class Inventory : MonoBehaviour, IInventory
     {
         readonly ObservableDictionary<ItemTypeObject, ItemViewModel> _items = new ObservableDictionary<ItemTypeObject, ItemViewModel>();
 

@@ -1,5 +1,4 @@
 ﻿using Framework;
-using UI;
 using UI.ViewModel;
 using UnityEngine;
 
@@ -16,18 +15,19 @@ namespace Core
         void Start()
         {
             StationName = NameGenerator.NumberToName(_stationCount++);
-            _tooltipVm = new TooltipViewModel($"Station {StationName}");
+            _tooltipVm = new TooltipViewModel(transform, 20, $"Station {StationName}");
 
         }
 
         public void OnMouseEnter()
         {
-            UiManager.UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
+            CoreContainerViewModel.Instance.Tooltip = _tooltipVm;
         }
 
         public void OnMouseExit()
         {
-            UiManager.UiManager.Instance.Tooltip.Hide(transform);
+            if (CoreContainerViewModel.Instance.Tooltip == _tooltipVm)
+                CoreContainerViewModel.Instance.Tooltip = null;
         }
     }
 }

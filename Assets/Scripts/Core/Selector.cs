@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Core
 {
@@ -6,6 +7,9 @@ namespace Core
     public class Selector : MonoBehaviour
     {
         private SphereCollider _collider;
+        private readonly List<Selectable> _selectedTargets = new List<Selectable>();
+
+        public IEnumerable<Selectable> SelectedTargets => _selectedTargets;
 
         public float SelectionRadius
         {
@@ -22,14 +26,20 @@ namespace Core
         {
             var target = other.gameObject.GetComponent<Selectable>() ?? other.gameObject.GetComponentInParent<Selectable>();
             if (target != null)
+            {
+                _selectedTargets.Add(target);
                 target.Select(true);
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
             var target = other.gameObject.GetComponent<Selectable>() ?? other.gameObject.GetComponentInParent<Selectable>();
             if (target != null)
+            {
+                _selectedTargets.Remove(target);
                 target.Select(false);
+            }
         }
     }
 }

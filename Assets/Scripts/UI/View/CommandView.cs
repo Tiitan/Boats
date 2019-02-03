@@ -52,6 +52,7 @@ namespace UI.View
                 _deployedSubCommandParent = commandVm;
                 var subcommandPanel = Instantiate(_subCommandPrefab, transform.position, transform.rotation, transform);
                 _subCommandUiView = subcommandPanel.GetComponent<CommandUiView>();
+                _subCommandUiView.Initialize(null);
                 _subCommandUiView.Register(commandVm.SubCommands, this);
             }
             else

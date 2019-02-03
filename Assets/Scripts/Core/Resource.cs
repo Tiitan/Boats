@@ -29,9 +29,7 @@ namespace Core
         void Start()
         {
             _maxQuantity = _quantity;
-            _tooltipVm = new TooltipViewModel(
-                _type.Name, 
-                _type.Description,
+            _tooltipVm = new TooltipViewModel(transform, 20, _type.Name, _type.Description,
                 new ObservableDictionary<string, TooltipPropertyViewModel>
                 {
                     {nameof(Type), new TooltipPropertyViewModel("Type", Type.Name) },
@@ -50,14 +48,15 @@ namespace Core
             }
         }
 
-        private void OnMouseEnter()
+        public void OnMouseEnter()
         {
-            UiManager.UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
+            CoreContainerViewModel.Instance.Tooltip = _tooltipVm;
         }
 
-        private void OnMouseExit()
+        public void OnMouseExit()
         {
-            UiManager.UiManager.Instance.Tooltip.Hide(transform);
+            if (CoreContainerViewModel.Instance.Tooltip == _tooltipVm)
+                CoreContainerViewModel.Instance.Tooltip = null;
         }
 
         public int Harvest(int value)

@@ -1,11 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!4 &2559018191742463761 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 69554312200991628, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f,
-    type: 3}
-  m_PrefabInstance: {fileID: 2554788092397771933}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4611852992706598946
 GameObject:
   m_ObjectHideFlags: 0
@@ -18,6 +12,7 @@ GameObject:
   - component: {fileID: 7944192457431003507}
   - component: {fileID: 8369849318051656091}
   - component: {fileID: 3206993839652702469}
+  - component: {fileID: 2781385139664548239}
   m_Layer: 0
   m_Name: Station
   m_TagString: Untagged
@@ -52,10 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869e1eb38908b4047a81a670aca23a33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _expansionBlueprintPrefab: {fileID: 1269223722404572, guid: 2dda50557fc70b543b4454705ed43b66,
-    type: 3}
-  _portExpansionBlueprintPrefab: {fileID: 3217329660105652573, guid: ecd1c726802d63841af6841ae57bf429,
-    type: 3}
   _expandIcon: {fileID: 0}
   _structureTypeList: {fileID: 11400000, guid: 241748474ab4e27439e017d928217a70, type: 2}
 --- !u!114 &8369849318051656091
@@ -88,6 +79,20 @@ MonoBehaviour:
     type: 3}
   _cursorPrefab: {fileID: 1263047615969013408, guid: 28e0d07249be7a24eb564572d945a79b,
     type: 3}
+--- !u!114 &2781385139664548239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4611852992706598946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114a92d681b1b9c41ae5c6d96264c99b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _segment: 1
+  _segmentSize: 250
 --- !u!1001 &2554788092397771933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95,6 +100,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7058377187733052874}
     m_Modifications:
+    - target: {fileID: 71444679320731094, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f,
+        type: 3}
+      propertyPath: m_Name
+      value: CommandCenter
+      objectReference: {fileID: 0}
     - target: {fileID: 69554312200991628, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -150,10 +160,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 71444679320731094, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f,
-        type: 3}
-      propertyPath: m_Name
-      value: CommandCenter
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f, type: 3}
+--- !u!4 &2559018191742463761 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 69554312200991628, guid: 9f1c4e9f45eb5be429f6fe9520a8a11f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2554788092397771933}
+  m_PrefabAsset: {fileID: 0}

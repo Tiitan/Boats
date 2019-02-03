@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Framework.Mvvm;
 
 namespace UI.ViewModel
 {

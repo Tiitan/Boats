@@ -3,8 +3,7 @@
     "references": [
         "UiViewModel",
         "Framework",
-        "Model",
-        "Core"
+        "Model"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

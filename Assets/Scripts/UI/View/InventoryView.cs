@@ -3,42 +3,58 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
-using Core;
-using Core.UiManager;
-using Framework.Mvvm;
 using Models.ScriptableObjects;
 using UI.ViewModel;
 using UnityEngine;
 
 namespace UI.View
 {
-    public class InventoryView : MonoBehaviour, IInventoryView
+    public class InventoryView : MonoBehaviour
     {
-        private readonly List<ItemView> _itemsView = new List<ItemView>();
-        private IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> _itemsVm;
-
         [SerializeField] private RectTransform _itemsTransform;
-
         [SerializeField] private GameObject _itemPrefab;
 
-        void Awake()
+        private IInventory _inventory;
+        private readonly List<ItemView> _itemsView = new List<ItemView>();
+
+        void Start()
         {
-            UiManager.Instance.Inventory = this;
+            if (CoreContainerViewModel.Instance.MainInventory != null)
+                Initialize(CoreContainerViewModel.Instance.MainInventory);
+            CoreContainerViewModel.Instance.PropertyChanged += UiManagerPropertyChanged;
         }
 
-        public void Initialize(IReadOnlyObservableDictionary<ItemTypeObject, IItemViewModel> itemsVm)
+        private void Initialize(IInventory inventory)
         {
-            _itemsVm = itemsVm;
-            itemsVm.CollectionChanged += ItemsVmOnCollectionChanged;
+            if (_inventory != null)
+            {
+                _inventory.Items.CollectionChanged -= ItemsVmOnCollectionChanged;
+                foreach (var view in _itemsView)
+                    Destroy(view.gameObject);
+                _itemsView.Clear();
+            }
 
-            foreach (var itemVm in itemsVm.Values)
+            _inventory = inventory;
+            _inventory.Items.CollectionChanged += ItemsVmOnCollectionChanged;
+            foreach (var itemVm in _inventory.Items.Values)
                 _itemsView.Add(ViewManager.Instantiate<ItemView, IItemViewModel>(itemVm, _itemPrefab, _itemsTransform));
+        }
+
+        private void UiManagerPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName != nameof(CoreContainerViewModel.Instance.MainInventory)) return;
+
+            Initialize(CoreContainerViewModel.Instance.MainInventory);
         }
 
         void OnDestroy()
         {
-            _itemsVm.CollectionChanged -= ItemsVmOnCollectionChanged;
+            if (_inventory != null)
+                _inventory.Items.CollectionChanged -= ItemsVmOnCollectionChanged;
+            if (CoreContainerViewModel.Instance != null)
+                CoreContainerViewModel.Instance.PropertyChanged -= UiManagerPropertyChanged;
         }
 
         private void ItemsVmOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -46,7 +62,8 @@ namespace UI.View
             // Add
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
                 foreach (var key in notifyCollectionChangedEventArgs.NewItems.Cast<ItemTypeObject>())
-                    _itemsView.Add(ViewManager.Instantiate<ItemView, IItemViewModel>(_itemsVm[key], _itemPrefab, _itemsTransform));
+                    _itemsView.Add(ViewManager.Instantiate<ItemView, IItemViewModel>(
+                        _inventory.Items[key], _itemPrefab, _itemsTransform));
 
             // Remove
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
@@ -54,7 +71,7 @@ namespace UI.View
                 {
                     var view = _itemsView.First(x => x.ItemVm.Type == key);
                     _itemsView.Remove(view);
-                    GameObject.Destroy(view.gameObject);
+                    Destroy(view.gameObject);
                 }
         }
     }

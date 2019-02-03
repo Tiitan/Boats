@@ -7,7 +7,6 @@ using System.Linq;
 using Core.BoatActions;
 using Models;
 using Models.ScriptableObjects;
-using UI;
 using UI.ViewModel;
 using UnityEngine;
 
@@ -42,7 +41,7 @@ namespace Core
             _structureType = structureType;
 
             // Tooltip
-            _tooltipVm = new TooltipViewModel(_structureType.BlueprintTooltip);
+            _tooltipVm = new TooltipViewModel(transform, 20, _structureType.BlueprintTooltip);
             foreach (var requiredItem in _structureType.ConstructionCost)
             {
                 _tooltipVm.EditableProperties.Add(requiredItem.Type.Name,
@@ -82,7 +81,6 @@ namespace Core
             if (_buildingFinished)
                 return;
             GetComponentInParent<Station>()?.OnExpandCanceled();
-            UiManager.UiManager.Instance.Tooltip.Hide(transform);
             Destroy(gameObject);
         }
 
@@ -97,7 +95,6 @@ namespace Core
             station?.OnExpandFinalized(expand);
 
             LevelManager.Instance.NavMeshSurface.BuildNavMesh();
-            UiManager.UiManager.Instance.Tooltip.Hide(transform);
             GetComponent<Selectable>().DisableSelection();
             yield return new WaitForSeconds(_finalizeDuration);
             Destroy(gameObject);
@@ -115,17 +112,15 @@ namespace Core
             GetComponent<Selectable>().Commands = new[] { _cancelCommand };
         }
 
-        private void OnMouseEnter()
+        public void OnMouseEnter()
         {
-            if (!_buildingFinished)
-            {
-                UiManager.UiManager.Instance.Tooltip.Show(transform, 20, _tooltipVm);
-            }
+            CoreContainerViewModel.Instance.Tooltip = _tooltipVm;
         }
 
-        private void OnMouseExit()
+        public void OnMouseExit()
         {
-            UiManager.UiManager.Instance.Tooltip.Hide(transform);
+            if (CoreContainerViewModel.Instance.Tooltip == _tooltipVm)
+                CoreContainerViewModel.Instance.Tooltip = null;
         }
     }
 }

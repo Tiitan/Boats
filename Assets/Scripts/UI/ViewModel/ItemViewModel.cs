@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Framework.Mvvm;
 using Models;
 using Models.ScriptableObjects;
 

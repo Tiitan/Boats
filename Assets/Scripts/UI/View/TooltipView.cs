@@ -1,39 +1,46 @@
 ﻿#pragma warning disable 0649 // Disable "Field is never assigned" for SerializedField
 #pragma warning disable IDE0044 // Disable "Add readonly modifier" for SerializedField
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Core.UiManager;
+using System.ComponentModel;
 using UI.ViewModel;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.View
 {
-    public class TooltipView : MonoBehaviour, ITooltipView
+    public class TooltipView : MonoBehaviour
     {
         [SerializeField] private Text _textTitle;
         [SerializeField] private Text _textDescription;
         [SerializeField] private RectTransform _propertiesTransform;
         [SerializeField] private GameObject _propertyPrefab;
 
-        private Transform _target;
         private readonly List<TooltipPropertyView> _propertiesViews = new List<TooltipPropertyView>();
         private ITooltipViewModel _tooltipVm;
 
         private RectTransform RectTransform => (RectTransform)transform;
 
-        void Awake()
+        void Start()
         {
-            UiManager.Instance.Tooltip = this;
+            CoreContainerViewModel.Instance.PropertyChanged += UiManagerPropertyChanged;
             gameObject.SetActive(false);
         }
 
-        public void Show(Transform target, int pixelRadius, ITooltipViewModel tooltipVm)
+        private void UiManagerPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (_target != null)
-                Hide(_target);
+            if (propertyChangedEventArgs.PropertyName != nameof(CoreContainerViewModel.Instance.Tooltip)) return;
+            
+            if (_tooltipVm != null)
+                Hide();
+            if (CoreContainerViewModel.Instance.Tooltip != null)
+                Show(CoreContainerViewModel.Instance.Tooltip);
+        }
 
+        private void Show(ITooltipViewModel tooltipVm)
+        {
             _textTitle.text = tooltipVm.Name;
             _textDescription.text = tooltipVm.Description;
 
@@ -44,27 +51,29 @@ namespace UI.View
                 _propertiesViews.Add(ViewManager.Instantiate<TooltipPropertyView, ITooltipPropertyViewModel>(
                     propertyVm, _propertyPrefab, _propertiesTransform));
 
-            _target = target;
             gameObject.SetActive(true);
             Canvas.ForceUpdateCanvases(); // force to recompute the ContentSizeFitter immediatly for correct height.
-            var position = Camera.main.WorldToScreenPoint(_target.position);
-            transform.position = new Vector3(position.x + RectTransform.rect.width / 2 + pixelRadius, 
-                                             position.y + RectTransform.rect.height / 2 + pixelRadius, 
+            var position = Camera.main.WorldToScreenPoint(tooltipVm.Target.position);
+            transform.position = new Vector3(position.x + RectTransform.rect.width / 2 + tooltipVm.PixelRadius, 
+                                             position.y + RectTransform.rect.height / 2 + tooltipVm.PixelRadius, 
                                              position.z);
         }
 
-        public void Hide(Transform target)
+        void OnDestroy()
         {
-            if (target != _target) return;
+            if (CoreContainerViewModel.Instance != null)
+                CoreContainerViewModel.Instance.PropertyChanged -= UiManagerPropertyChanged;
+        }
 
+        private void Hide()
+        {
             foreach (var propertyView in _propertiesViews)
-                GameObject.Destroy(propertyView.gameObject);
+                Destroy(propertyView.gameObject);
             _propertiesViews.Clear();
 
             _tooltipVm.Properties.CollectionChanged -= PropertiesOnCollectionChanged;
             _tooltipVm = null;
 
-            _target = null;
             gameObject.SetActive(false);
         }
 

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace UI
+namespace Framework.Mvvm
 {
     public class ObservableObject : INotifyPropertyChanged
     {
