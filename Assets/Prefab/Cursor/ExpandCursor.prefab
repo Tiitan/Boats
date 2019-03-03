@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9e3d9aeddee1474089b391f52d9624e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _material: {fileID: 2100000, guid: b020e9b32d6cd5c48946e677773619a5, type: 2}
+  _renderer: {fileID: 7289621474904042078}
   _canBuildColor: {r: 0.32549024, g: 0.9137255, b: 0.36730057, a: 0.6627451}
   _invalidPosition: {r: 0.9137255, g: 0.3348119, b: 0.32549024, a: 0.6627451}
   _invalidRotation: {r: 0.9137255, g: 0.9092962, b: 0.32549024, a: 0.6627451}

@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39dbb5c618539b04fb7128ece1cc00a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _material: {fileID: 2100000, guid: f00fcf7e3610e444ca1e069cac75a320, type: 2}
+  _renderer: {fileID: 3676174056611857990}
   _canBuildColor: {r: 0.32373613, g: 0.42685172, b: 0.9150943, a: 0.6627451}
   _obstructedColor: {r: 0.9137255, g: 0.3348119, b: 0.32549024, a: 0.6627451}
   _proximityColor: {r: 0.9137255, g: 0.9092962, b: 0.32549024, a: 0.6627451}

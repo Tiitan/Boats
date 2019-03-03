@@ -11,11 +11,13 @@ namespace Visual.Cursors
     {
         private StationExpanderControl _stationExpanderControl;
 
-        [SerializeField] private Material _material;
+        [SerializeField] private Renderer _renderer;
 
         [SerializeField] private Color _canBuildColor;
         [SerializeField] private Color _invalidPosition;
         [SerializeField] private Color _invalidRotation;
+
+        private Material _material;
 
         /// <summary>
         /// Intializing in awake instead of start 
@@ -25,12 +27,14 @@ namespace Visual.Cursors
         {
             _stationExpanderControl = GetComponentInParent<StationExpanderControl>();
             _stationExpanderControl.CanExpandAtLocationChanged += OnCanExpandAtLocationChanged;
+            _material = _renderer.material;
             _material.color = _canBuildColor;
         }
 
         public void OnDestroy()
         {
             _stationExpanderControl.CanExpandAtLocationChanged -= OnCanExpandAtLocationChanged;
+            Destroy(_material);
         }
 
         private void OnCanExpandAtLocationChanged(object sender, CanExpandAtLocationChangedArg canExpandAtLocationChangedArg)

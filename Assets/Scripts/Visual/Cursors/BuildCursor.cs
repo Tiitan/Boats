@@ -11,22 +11,26 @@ namespace Visual.Cursors
     {
         private BuildManager _buildManager;
 
-        [SerializeField] private Material _material;
+        [SerializeField] private Renderer _renderer;
 
         [SerializeField] private Color _canBuildColor;
         [SerializeField] private Color _obstructedColor;
         [SerializeField] private Color _proximityColor;
 
+        Material _material;
+
         public void Start()
         {
             _buildManager = GetComponentInParent<BuildManager>();
             _buildManager.CanBuildAtLocationChanged += OnCanBuildAtLocationChanged;
+            _material = _renderer.material;
             _material.color = _canBuildColor;
         }
 
         public void OnDestroy()
         {
             _buildManager.CanBuildAtLocationChanged -= OnCanBuildAtLocationChanged;
+            Destroy(_material);
         }
 
         private void OnCanBuildAtLocationChanged(object sender, CanBuildAtLocationChangedArg canBuildAtLocationChangedArg)
