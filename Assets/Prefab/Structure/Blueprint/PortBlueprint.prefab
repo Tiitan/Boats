@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1269223722404572, guid: 2dda50557fc70b543b4454705ed43b66, type: 3}
+      propertyPath: m_Name
+      value: PortBlueprint
+      objectReference: {fileID: 0}
     - target: {fileID: 4023747733062790, guid: 2dda50557fc70b543b4454705ed43b66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -51,36 +55,47 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1269223722404572, guid: 2dda50557fc70b543b4454705ed43b66, type: 3}
-      propertyPath: m_Name
-      value: PortBlueprint
-      objectReference: {fileID: 0}
-    - target: {fileID: 4548615556687953014, guid: 2dda50557fc70b543b4454705ed43b66,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 4300000, guid: 95cbf49c56040a649bf13473228a9273, type: 3}
-    - target: {fileID: 7858865003413170509, guid: 2dda50557fc70b543b4454705ed43b66,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 4300000, guid: 95cbf49c56040a649bf13473228a9273, type: 3}
     - target: {fileID: 114670916824862978, guid: 2dda50557fc70b543b4454705ed43b66,
         type: 3}
       propertyPath: _structurePrefab
       value: 
       objectReference: {fileID: 2483962371689628511, guid: 20a04c24c81fb7141893205651deb588,
         type: 3}
-    - target: {fileID: 4548615556687953014, guid: 2dda50557fc70b543b4454705ed43b66,
-        type: 3}
-      propertyPath: m_Convex
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114670916824862978, guid: 2dda50557fc70b543b4454705ed43b66,
         type: 3}
       propertyPath: _structureType
       value: 
       objectReference: {fileID: 11400000, guid: 99449753bcfee904bbd3f83aa30a8269,
         type: 2}
+    - target: {fileID: 4548615556687953014, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 69e1948df38085a4d91d1a53b7e0919b, type: 3}
+    - target: {fileID: 4548615556687953014, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704091993933898574, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673696130770503881, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8673696130770503881, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9829c4b64dcf38f44a0a707fe6cab56d, type: 2}
+    - target: {fileID: 7858865003413170509, guid: 2dda50557fc70b543b4454705ed43b66,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 633cc5559e7cf7845a233daf8fa02018, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dda50557fc70b543b4454705ed43b66, type: 3}

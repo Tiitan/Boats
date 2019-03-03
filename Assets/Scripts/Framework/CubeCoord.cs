@@ -26,7 +26,7 @@ namespace Framework
         /// <summary>
         /// Side of  an hexagon, update to match grid size.
         /// </summary>
-        private const float HexaSide = 8f;
+        private const float HexaSide = 22.4f;
 
         private static readonly float Sqrt3 = Mathf.Sqrt(3f);
 
